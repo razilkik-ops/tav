@@ -33,12 +33,26 @@ import {
   X,
 } from '@phosphor-icons/react';
 
+const siteBase = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = fileName => `${import.meta.env.BASE_URL}assets/${fileName}`;
+const withBase = (path = '/') => {
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  if (!siteBase) return normalized;
+  return normalized === '/' ? `${siteBase}/` : `${siteBase}${normalized}`;
+};
+const readAppPath = () => {
+  const browserPath = window.location.pathname.replace(/\/$/, '') || '/';
+  if (!siteBase) return browserPath;
+  if (browserPath === siteBase) return '/';
+  return browserPath.startsWith(`${siteBase}/`) ? browserPath.slice(siteBase.length) : browserPath;
+};
+
 const directions = [
   {
     id: 1,
     name: 'Станки',
     path: '/napravleniya/stanki',
-    image: '/assets/category-machines.webp',
+    image: asset('category-machines.webp'),
     pageTitle: 'ПРОМЫШЛЕННЫЕ СТАНКИ ИЗ АЗИИ',
     lead: 'Подбираем, проверяем и доставляем металлообрабатывающие и производственные станки под вашу технологию.',
     description: 'Работаем как единое окно: уточняем технологическую задачу, сравниваем производителей, проверяем станок на заводе и довозим до вашего предприятия.',
@@ -50,7 +64,7 @@ const directions = [
     id: 2,
     name: 'Спецтехника',
     path: '/napravleniya/spetstekhnika',
-    image: '/assets/category-heavy-equipment.webp',
+    image: asset('category-heavy-equipment.webp'),
     pageTitle: 'СПЕЦТЕХНИКА ДЛЯ СТРОЙКИ И КАРЬЕРОВ',
     lead: 'Поставляем технику для земляных, дорожных, погрузочных и карьерных работ с проверкой состояния и документов.',
     description: 'Подбираем новую и контрактную спецтехнику под условия эксплуатации, производительность и бюджет. Организуем осмотр, погрузку, перевозку и таможенное оформление.',
@@ -62,7 +76,7 @@ const directions = [
     id: 3,
     name: 'Насосы',
     path: '/napravleniya/nasosy',
-    image: '/assets/category-pumps.webp',
+    image: asset('category-pumps.webp'),
     pageTitle: 'ПРОМЫШЛЕННЫЕ НАСОСЫ И СТАНЦИИ',
     lead: 'Комплектуем насосное оборудование по рабочей точке, среде, материалам исполнения и требованиям вашего производства.',
     description: 'Сверяем гидравлические параметры и присоединительные размеры, подбираем исполнение двигателя и автоматики, контролируем испытания перед отгрузкой.',
@@ -74,7 +88,7 @@ const directions = [
     id: 4,
     name: 'Запчасти',
     path: '/napravleniya/zapchasti',
-    image: '/assets/category-parts.webp',
+    image: asset('category-parts.webp'),
     pageTitle: 'ЗАПЧАСТИ ДЛЯ ПРОМЫШЛЕННОГО ОБОРУДОВАНИЯ',
     lead: 'Находим оригинальные детали и проверенные аналоги по маркировке, чертежу, образцу или каталожному номеру.',
     description: 'Закрываем разовые и регулярные потребности в комплектующих. Консолидируем позиции от разных поставщиков и доставляем одной партией.',
@@ -86,7 +100,7 @@ const directions = [
     id: 5,
     name: 'Строительное оборудование',
     path: '/napravleniya/stroitelnoe-oborudovanie',
-    image: '/assets/category-construction.webp',
+    image: asset('category-construction.webp'),
     pageTitle: 'СТРОИТЕЛЬНОЕ ОБОРУДОВАНИЕ',
     lead: 'Поставляем установки и технологические комплексы для производства материалов, подготовки сырья и строительных работ.',
     description: 'Прорабатываем производительность линии, условия монтажа и состав комплектации. Проверяем оборудование в работе и координируем доставку крупногабаритных узлов.',
@@ -98,7 +112,7 @@ const directions = [
     id: 6,
     name: 'Другое',
     path: '/napravleniya/drugoe',
-    image: '/assets/category-factory.webp',
+    image: asset('category-factory.webp'),
     pageTitle: 'НЕСТАНДАРТНОЕ ОБОРУДОВАНИЕ ПОД ЗАДАЧУ',
     lead: 'Если нужного направления нет в каталоге, найдём производителя и построим цепочку поставки специально под ваш проект.',
     description: 'Берём в работу нестандартные запросы: от отдельного узла до комплектной производственной линии. Подключаем профильных инженеров и локальных инспекторов.',
@@ -127,9 +141,9 @@ const advantages = [
 ];
 
 const cases = [
-  { id: 'c1', title: 'Фрезерный центр для производства', image: '/assets/category-machines.webp', meta: ['38 дней', '12 тонн', 'Китай → Беларусь'] },
-  { id: 'c2', title: 'Насосная станция для предприятия', image: '/assets/category-pumps.webp', meta: ['29 дней', '8 тонн', 'Китай → Россия'] },
-  { id: 'c3', title: 'Спецтехника для строительной компании', image: '/assets/case-excavator.webp', meta: ['45 дней', '20 тонн', 'Китай → Беларусь'] },
+  { id: 'c1', title: 'Фрезерный центр для производства', image: asset('category-machines.webp'), meta: ['38 дней', '12 тонн', 'Китай → Беларусь'] },
+  { id: 'c2', title: 'Насосная станция для предприятия', image: asset('category-pumps.webp'), meta: ['29 дней', '8 тонн', 'Китай → Россия'] },
+  { id: 'c3', title: 'Спецтехника для строительной компании', image: asset('case-excavator.webp'), meta: ['45 дней', '20 тонн', 'Китай → Беларусь'] },
 ];
 
 function Logo({ onHome }) {
@@ -164,7 +178,7 @@ function SectionTitle({ eyebrow, children }) {
 
 function DirectionCard({ item, onAdd, onNavigate }) {
   return <article className="direction-card">
-    <a className="direction-card-link" href={item.path} onClick={(event) => { event.preventDefault(); onNavigate(item.path); }} aria-label={`Открыть страницу «${item.name}»`} />
+    <a className="direction-card-link" href={withBase(item.path)} onClick={(event) => { event.preventDefault(); onNavigate(item.path); }} aria-label={`Открыть страницу «${item.name}»`} />
     <img src={item.image} alt={item.name} />
     <div className="direction-shade" />
     <span className="direction-number">{String(item.id).padStart(2, '0')}</span>
@@ -236,7 +250,7 @@ function ChatWidget() {
 
 function ContactStrip() {
   return <section className="contact-strip" id="contacts">
-    <img className="contact-map" src="/assets/contact-route-map-generated-v2.jpg" alt="" aria-hidden="true" />
+    <img className="contact-map" src={asset('contact-route-map-generated-v2.jpg')} alt="" aria-hidden="true" />
     <div className="contact-content">
       <h2>ОБСУДИМ ВАШ ПРОЕКТ</h2>
       <div className="contact-list"><a href="tel:+375290000000"><PhoneCall /> <span>+375 29 000-00-00<small>Звоните</small></span></a><a href="mailto:info@tavimport.by"><EnvelopeSimple /> <span>info@tavimport.by<small>Пишите</small></span></a><a href="#telegram"><PaperPlaneTilt /> <span>Telegram / WhatsApp / Viber<small>Свяжитесь в мессенджере</small></span></a><span><Clock /> <b>Пн–Пт: 9:00–18:00<small>Время работы</small></b></span></div>
@@ -287,7 +301,7 @@ function DirectionPage({ item, onNavigate, onAdd, onSuccess }) {
 
     <section className="section direction-other">
       <div className="direction-other-head"><SectionTitle>ДРУГИЕ НАПРАВЛЕНИЯ</SectionTitle><button onClick={() => onNavigate('/', 'directions')}>СМОТРЕТЬ ВСЕ <ArrowRight /></button></div>
-      <div className="direction-other-grid">{otherDirections.map(direction => <a href={direction.path} key={direction.id} onClick={(event) => { event.preventDefault(); onNavigate(direction.path); }}><img src={direction.image} alt="" /><span>{String(direction.id).padStart(2, '0')}</span><h3>{direction.name}</h3><ArrowRight /></a>)}</div>
+      <div className="direction-other-grid">{otherDirections.map(direction => <a href={withBase(direction.path)} key={direction.id} onClick={(event) => { event.preventDefault(); onNavigate(direction.path); }}><img src={direction.image} alt="" /><span>{String(direction.id).padStart(2, '0')}</span><h3>{direction.name}</h3><ArrowRight /></a>)}</div>
     </section>
 
     <section className="section request-section direction-request" id="request">
@@ -310,14 +324,14 @@ function Footer({ onNavigate }) {
 
 export function App() {
   const qaMode = new URLSearchParams(window.location.search).has('qa');
-  const [path, setPath] = useState(window.location.pathname.replace(/\/$/, '') || '/');
+  const [path, setPath] = useState(readAppPath());
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const count = useMemo(() => cart.reduce((sum, item) => sum + item.qty, 0), [cart]);
   const activeDirection = directions.find(item => item.path === path);
   useEffect(() => {
-    const syncPath = () => setPath(window.location.pathname.replace(/\/$/, '') || '/');
+    const syncPath = () => setPath(readAppPath());
     window.addEventListener('popstate', syncPath);
     return () => window.removeEventListener('popstate', syncPath);
   }, []);
@@ -325,7 +339,7 @@ export function App() {
   useEffect(() => { if (!notice) return; const id = setTimeout(() => setNotice(''), 4200); return () => clearTimeout(id); }, [notice]);
   const navigate = (nextPath = '/', anchor = '') => {
     const normalizedPath = nextPath.replace(/\/$/, '') || '/';
-    const nextUrl = `${normalizedPath}${anchor ? `#${anchor}` : ''}`;
+    const nextUrl = `${withBase(normalizedPath)}${anchor ? `#${anchor}` : ''}`;
     if (`${window.location.pathname}${window.location.hash}` !== nextUrl) window.history.pushState({}, '', nextUrl);
     setPath(normalizedPath);
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
@@ -353,9 +367,9 @@ export function App() {
     <Header cartCount={count} onCart={() => setCartOpen(true)} onNavigate={navigate} />
     <main>
       <section className="hero" id="hero">
-        <img src="/assets/hero-industrial.webp" alt="Доставка промышленного оборудования" />
+        <img src={asset('hero-industrial.webp')} alt="Доставка промышленного оборудования" />
         <div className="hero-overlay" />
-        <img className="hero-route-map" src="/assets/hero-route-map.webp" alt="" aria-hidden="true" />
+        <img className="hero-route-map" src={asset('hero-route-map.webp')} alt="" aria-hidden="true" />
         <div className="hero-content">
           <span>TAV IMPORT</span>
           <h1>ПРОМЫШЛЕННОЕ<br />ОБОРУДОВАНИЕ ИЗ АЗИИ<br />ПОД КЛЮЧ</h1>
@@ -386,7 +400,7 @@ export function App() {
       </section>
 
       <section className="section request-section" id="request">
-        <div className="request-copy"><img src="/assets/request-container.webp" alt="Контейнерная доставка оборудования" /><div><h2>РАССЧИТАЕМ ПОСТАВКУ<br />ПОД ВАШУ ЗАДАЧУ</h2><p>Прикрепите спецификацию или опишите оборудование — подготовим предварительный расчёт.</p></div></div>
+        <div className="request-copy"><img src={asset('request-container.webp')} alt="Контейнерная доставка оборудования" /><div><h2>РАССЧИТАЕМ ПОСТАВКУ<br />ПОД ВАШУ ЗАДАЧУ</h2><p>Прикрепите спецификацию или опишите оборудование — подготовим предварительный расчёт.</p></div></div>
         <LeadForm onSuccess={leadSuccess} />
       </section>
 
