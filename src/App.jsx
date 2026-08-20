@@ -312,11 +312,19 @@ function ApplicationModal({ service, onClose, onSuccess }) {
   </div>;
 }
 
+function ChatMessageContent({ text }) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) => part.startsWith('**') && part.endsWith('**')
+    ? <strong key={index}>{part.slice(2, -2)}</strong>
+    : part
+  );
+}
+
 function ChatWidget({ request }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([{ from: 'agent', text: 'Здравствуйте! Помогу подобрать оборудование и рассчитать доставку.' }]);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
+  const [slowResponse, setSlowResponse] = useState(false);
   const draftRef = useRef(null);
   const messagesEndRef = useRef(null);
   useEffect(() => {
@@ -341,6 +349,8 @@ function ChatWidget({ request }) {
     setMessages(nextMessages);
     setDraft('');
     setSending(true);
+    setSlowResponse(false);
+    const slowResponseTimer = window.setTimeout(() => setSlowResponse(true), 10000);
     try {
       const response = await fetch(withBase('/api/chat'), {
         method: 'POST',
@@ -357,13 +367,15 @@ function ChatWidget({ request }) {
     } catch (error) {
       setMessages(current => [...current, { from: 'error', text: error.message || 'Не удалось получить ответ. Попробуйте ещё раз.' }]);
     } finally {
+      window.clearTimeout(slowResponseTimer);
+      setSlowResponse(false);
       setSending(false);
     }
   };
   return <div className="chat-widget">
     {open && <section className="chat-panel" aria-label="Чат с ИИ-консультантом">
       <header><div className="agent-avatar"><Headset /></div><div><strong>Консультант TAV</strong><span><i /> ИИ-консультант · онлайн</span></div><button onClick={() => setOpen(false)} aria-label="Закрыть чат"><X /></button></header>
-      <div className="chat-messages" aria-live="polite">{messages.map((m, i) => <p className={m.from} key={`${m.from}-${i}`}>{m.text}</p>)}{sending && <p className="agent typing" aria-label="Консультант печатает"><i /><i /><i /></p>}<span ref={messagesEndRef} /></div>
+      <div className="chat-messages" aria-live="polite">{messages.map((m, i) => <p className={`${m.from} ${m.text.includes('ДАННЫЕ ДЛЯ МЕНЕДЖЕРА') ? 'manager-summary' : ''}`} key={`${m.from}-${i}`}><ChatMessageContent text={m.text} /></p>)}{sending && <p className="agent typing" aria-label="Консультант готовит ответ"><span>{slowResponse ? 'Проверяю детали — это может занять до минуты' : 'Готовлю ответ'}</span><b aria-hidden="true"><i /><i /><i /></b></p>}<span ref={messagesEndRef} /></div>
       <form onSubmit={send}><textarea ref={draftRef} rows="1" value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form.requestSubmit(); } }} placeholder="Введите сообщение…" aria-label="Сообщение" autoFocus /><button type="submit" aria-label="Отправить" disabled={sending || !draft.trim()}><PaperPlaneTilt weight="fill" /></button></form>
     </section>}
     <button className="chat-toggle" onClick={() => setOpen(v => !v)} aria-label="Открыть чат-менеджер">{open ? <X /> : <ChatCircleDots weight="fill" />}<span>Чат-менеджер</span></button>
