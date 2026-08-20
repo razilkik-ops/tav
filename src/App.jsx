@@ -40,6 +40,25 @@ const readAppPath = () => {
   return browserPath.startsWith(`${siteBase}/`) ? browserPath.slice(siteBase.length) : browserPath;
 };
 
+const CHAT_STORAGE_KEY = 'tav-import-chat-history-v1';
+const CHAT_RETENTION_MS = 24 * 60 * 60 * 1000;
+const CHAT_WELCOME_MESSAGE = { from: 'agent', text: 'Здравствуйте! Помогу подобрать оборудование и рассчитать доставку.' };
+const persistableChatMessages = messages => messages
+  .filter(message => ['user', 'agent'].includes(message?.from) && typeof message.text === 'string')
+  .slice(-50);
+const readStoredChatMessages = () => {
+  try {
+    const stored = JSON.parse(window.localStorage.getItem(CHAT_STORAGE_KEY));
+    const isFresh = Number.isFinite(stored?.updatedAt) && Date.now() - stored.updatedAt < CHAT_RETENTION_MS;
+    const messages = persistableChatMessages(Array.isArray(stored?.messages) ? stored.messages : []);
+    if (isFresh && messages.length) return messages;
+    window.localStorage.removeItem(CHAT_STORAGE_KEY);
+  } catch {
+    // Fall back to a fresh chat when browser storage is unavailable.
+  }
+  return [CHAT_WELCOME_MESSAGE];
+};
+
 const directions = [
   {
     id: 1,
@@ -321,12 +340,13 @@ function ChatMessageContent({ text }) {
 
 function ChatWidget({ request }) {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([{ from: 'agent', text: 'Здравствуйте! Помогу подобрать оборудование и рассчитать доставку.' }]);
+  const [messages, setMessages] = useState(readStoredChatMessages);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [slowResponse, setSlowResponse] = useState(false);
   const draftRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const persistedMessagesRef = useRef(JSON.stringify(persistableChatMessages(messages)));
   useEffect(() => {
     if (!request) return;
     setOpen(true);
@@ -341,6 +361,33 @@ function ChatWidget({ request }) {
   useEffect(() => {
     if (open) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [messages, open, sending]);
+  useEffect(() => {
+    const persistableMessages = persistableChatMessages(messages);
+    const snapshot = JSON.stringify(persistableMessages);
+    if (snapshot === persistedMessagesRef.current) return;
+    persistedMessagesRef.current = snapshot;
+    try {
+      window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify({ updatedAt: Date.now(), messages: persistableMessages }));
+    } catch {
+      // The chat remains usable when browser storage is unavailable.
+    }
+  }, [messages]);
+  useEffect(() => {
+    const clearExpiredChat = () => {
+      try {
+        const stored = JSON.parse(window.localStorage.getItem(CHAT_STORAGE_KEY));
+        if (!stored?.updatedAt || Date.now() - stored.updatedAt < CHAT_RETENTION_MS) return;
+        window.localStorage.removeItem(CHAT_STORAGE_KEY);
+        const freshMessages = [CHAT_WELCOME_MESSAGE];
+        persistedMessagesRef.current = JSON.stringify(freshMessages);
+        setMessages(freshMessages);
+      } catch {
+        // Ignore storage restrictions; the in-memory chat remains available.
+      }
+    };
+    const expirationCheck = window.setInterval(clearExpiredChat, 60 * 1000);
+    return () => window.clearInterval(expirationCheck);
+  }, []);
   const send = async (event) => {
     event.preventDefault();
     const text = draft.trim();
