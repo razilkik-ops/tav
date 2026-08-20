@@ -1,7 +1,53 @@
 import assert from "node:assert/strict";
 import { access } from "node:fs/promises";
 import test from "node:test";
-import worker from "../worker/index.js";
+import worker, { handleChatRequest } from "../worker/index.js";
+
+test("proxies a validated conversation to DeepSeek without exposing the key", async () => {
+  let upstreamRequest;
+  const response = await handleChatRequest(
+    new Request("https://example.test/api/chat", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "user", content: "Нужен промышленный насос" }] }),
+    }),
+    { DEEPSEEK_API_KEY: "secret-test-key" },
+    async (url, init) => {
+      upstreamRequest = { url, init, body: JSON.parse(init.body) };
+      return Response.json({ choices: [{ message: { content: "Уточните рабочую точку и перекачиваемую среду." } }] });
+    },
+  );
+
+  const responseBody = await response.json();
+  assert.equal(response.status, 200);
+  assert.deepEqual(responseBody, { message: "Уточните рабочую точку и перекачиваемую среду." });
+  assert.equal(upstreamRequest.url, "https://api.deepseek.com/chat/completions");
+  assert.equal(upstreamRequest.init.headers.authorization, "Bearer secret-test-key");
+  assert.equal(upstreamRequest.body.model, "deepseek-v4-flash");
+  assert.equal(upstreamRequest.body.thinking.type, "disabled");
+  assert.equal(upstreamRequest.body.messages.at(-1).content, "Нужен промышленный насос");
+  assert.equal(JSON.stringify(responseBody).includes("secret-test-key"), false);
+});
+
+test("returns a safe error when the DeepSeek key is not configured", async () => {
+  const response = await handleChatRequest(new Request("https://example.test/api/chat", { method: "POST", body: "{}" }));
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).error.includes("Чат временно недоступен"), true);
+});
+
+test("rejects invalid chat history before contacting DeepSeek", async () => {
+  let upstreamCalls = 0;
+  const response = await handleChatRequest(
+    new Request("https://example.test/api/chat", { method: "POST", body: JSON.stringify({ messages: [] }) }),
+    { DEEPSEEK_API_KEY: "secret-test-key" },
+    async () => {
+      upstreamCalls += 1;
+      return Response.json({});
+    },
+  );
+  assert.equal(response.status, 400);
+  assert.equal(upstreamCalls, 0);
+});
 
 test("serves existing static assets without a fallback", async () => {
   const calls = [];

@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
   ArrowsClockwise,
   Bank,
-  CaretDown,
   ChatCircleDots,
   CheckCircle,
   ClipboardText,
@@ -17,17 +16,11 @@ import {
   List,
   MagnifyingGlass,
   MapPin,
-  Minus,
-  Package,
-  Paperclip,
   PaperPlaneTilt,
   Phone,
   PhoneCall,
-  Plus,
   ShieldCheck,
-  ShoppingCart,
   Timer,
-  Trash,
   Truck,
   Warehouse,
   X,
@@ -53,7 +46,9 @@ const directions = [
     name: 'Станки',
     path: '/napravleniya/stanki',
     image: asset('category-machines.webp'),
+    heroImage: asset('direction-hero-stanki-v2.jpg'),
     pageTitle: 'ПРОМЫШЛЕННЫЕ СТАНКИ ИЗ АЗИИ',
+    questionSubject: 'промышленных станков из Азии',
     lead: 'Подбираем, проверяем и доставляем металлообрабатывающие и производственные станки под вашу технологию.',
     description: 'Работаем как единое окно: уточняем технологическую задачу, сравниваем производителей, проверяем станок на заводе и довозим до вашего предприятия.',
     supplies: ['Токарные и фрезерные центры', 'Лазерные и плазменные станки', 'Листогибы и гидравлические прессы', 'Автоматические линии с ЧПУ', 'Деревообрабатывающие станки', 'Оснастка и комплектующие'],
@@ -65,7 +60,9 @@ const directions = [
     name: 'Спецтехника',
     path: '/napravleniya/spetstekhnika',
     image: asset('category-heavy-equipment.webp'),
+    heroImage: asset('direction-hero-spetstekhnika-v2.jpg'),
     pageTitle: 'СПЕЦТЕХНИКА ДЛЯ СТРОЙКИ И КАРЬЕРОВ',
+    questionSubject: 'спецтехники для строительства и карьеров',
     lead: 'Поставляем технику для земляных, дорожных, погрузочных и карьерных работ с проверкой состояния и документов.',
     description: 'Подбираем новую и контрактную спецтехнику под условия эксплуатации, производительность и бюджет. Организуем осмотр, погрузку, перевозку и таможенное оформление.',
     supplies: ['Экскаваторы и экскаваторы-погрузчики', 'Фронтальные и вилочные погрузчики', 'Бульдозеры и грейдеры', 'Автокраны и подъёмная техника', 'Дорожно-строительные машины', 'Карьерная техника'],
@@ -77,7 +74,9 @@ const directions = [
     name: 'Насосы',
     path: '/napravleniya/nasosy',
     image: asset('category-pumps.webp'),
+    heroImage: asset('direction-hero-nasosy-v2.jpg'),
     pageTitle: 'ПРОМЫШЛЕННЫЕ НАСОСЫ И СТАНЦИИ',
+    questionSubject: 'промышленных насосов и станций',
     lead: 'Комплектуем насосное оборудование по рабочей точке, среде, материалам исполнения и требованиям вашего производства.',
     description: 'Сверяем гидравлические параметры и присоединительные размеры, подбираем исполнение двигателя и автоматики, контролируем испытания перед отгрузкой.',
     supplies: ['Центробежные насосы', 'Химические и коррозионностойкие насосы', 'Шламовые и грунтовые насосы', 'Дозирующие установки', 'Пожарные насосные станции', 'Насосы с частотным управлением'],
@@ -89,7 +88,9 @@ const directions = [
     name: 'Запчасти',
     path: '/napravleniya/zapchasti',
     image: asset('category-parts.webp'),
+    heroImage: asset('direction-hero-zapchasti-v2.jpg'),
     pageTitle: 'ЗАПЧАСТИ ДЛЯ ПРОМЫШЛЕННОГО ОБОРУДОВАНИЯ',
+    questionSubject: 'запчастей для промышленного оборудования',
     lead: 'Находим оригинальные детали и проверенные аналоги по маркировке, чертежу, образцу или каталожному номеру.',
     description: 'Закрываем разовые и регулярные потребности в комплектующих. Консолидируем позиции от разных поставщиков и доставляем одной партией.',
     supplies: ['Подшипники и редукторы', 'Гидравлика и пневматика', 'Электрика и компоненты ЧПУ', 'Литые и механообработанные детали', 'Ремни, цепи и уплотнения', 'Расходные материалы и ЗИП'],
@@ -101,7 +102,9 @@ const directions = [
     name: 'Строительное оборудование',
     path: '/napravleniya/stroitelnoe-oborudovanie',
     image: asset('category-construction.webp'),
+    heroImage: asset('direction-hero-stroitelnoe-v2.jpg'),
     pageTitle: 'СТРОИТЕЛЬНОЕ ОБОРУДОВАНИЕ',
+    questionSubject: 'строительного оборудования',
     lead: 'Поставляем установки и технологические комплексы для производства материалов, подготовки сырья и строительных работ.',
     description: 'Прорабатываем производительность линии, условия монтажа и состав комплектации. Проверяем оборудование в работе и координируем доставку крупногабаритных узлов.',
     supplies: ['Бетонные и асфальтовые заводы', 'Дробильно-сортировочные комплексы', 'Бетононасосы и смесители', 'Подъёмное оборудование', 'Компрессоры и генераторы', 'Опалубка и строительные системы'],
@@ -113,7 +116,9 @@ const directions = [
     name: 'Другое',
     path: '/napravleniya/drugoe',
     image: asset('category-factory.webp'),
+    heroImage: asset('direction-hero-drugoe-v2.jpg'),
     pageTitle: 'НЕСТАНДАРТНОЕ ОБОРУДОВАНИЕ ПОД ЗАДАЧУ',
+    questionSubject: 'нестандартного оборудования под задачу',
     lead: 'Если нужного направления нет в каталоге, найдём производителя и построим цепочку поставки специально под ваш проект.',
     description: 'Берём в работу нестандартные запросы: от отдельного узла до комплектной производственной линии. Подключаем профильных инженеров и локальных инспекторов.',
     supplies: ['Упаковочные линии', 'Пищевое оборудование', 'Складская автоматизация', 'Энергетическое оборудование', 'Роботизированные комплексы', 'Оборудование по вашему ТЗ'],
@@ -121,6 +126,15 @@ const directions = [
     facts: [['7–10 дней', 'ПЕРВИЧНЫЙ ПОДБОР'], ['1 000+ заводов', 'БАЗА ПОСТАВЩИКОВ'], ['РБ + РФ', 'ДОСТАВКА ПОД КЛЮЧ']],
   },
 ];
+
+const supplyCardImages = {
+  1: ['stanki-01-cnc', 'stanki-02-laser', 'stanki-03-press', 'stanki-04-line', 'stanki-05-wood', 'stanki-06-tooling'],
+  2: ['spetstekhnika-01-excavator', 'spetstekhnika-02-loaders', 'spetstekhnika-03-dozer-grader', 'spetstekhnika-04-crane', 'spetstekhnika-05-road', 'spetstekhnika-06-quarry'],
+  3: ['nasosy-01-centrifugal', 'nasosy-02-chemical', 'nasosy-03-slurry', 'nasosy-04-dosing', 'nasosy-05-fire', 'nasosy-06-vfd'],
+  4: ['zapchasti-01-bearings', 'zapchasti-02-hydraulics', 'zapchasti-03-electronics', 'zapchasti-04-cast', 'zapchasti-05-belts', 'zapchasti-06-spares'],
+  5: ['stroitelnoe-01-plant', 'stroitelnoe-02-crusher', 'stroitelnoe-03-concrete', 'stroitelnoe-04-lifting', 'stroitelnoe-05-power', 'stroitelnoe-06-formwork'],
+  6: ['drugoe-01-packaging', 'drugoe-02-food', 'drugoe-03-warehouse', 'drugoe-04-energy', 'drugoe-05-robotics', 'drugoe-06-bespoke'],
+};
 
 const process = [
   ['Поиск', MagnifyingGlass],
@@ -146,13 +160,19 @@ const cases = [
   { id: 'c3', title: 'Спецтехника для строительной компании', image: asset('case-excavator.webp'), meta: ['45 дней', '20 тонн', 'Китай → Беларусь'] },
 ];
 
+const groupCompanies = [
+  ['TAV BIO', 'Медицинское направление', 'Поставка оборудования и медизделий из Китая, лицензирование и сопровождение', asset('group-icons/tav-bio-medical-v2.png'), asset('group-scenes/tav-bio-medical-v3.jpg')],
+  ['TAVDORSTROY', 'Дороги и инфраструктура', 'Строительство, материалы и спецтехника', asset('group-icons/tavdorstroy.png'), asset('group-scenes/tavdorstroy-v2.jpg')],
+  ['INKOMSTROYTORG', 'Комплексные поставки', 'Оборудование, комплектующие и материалы', asset('group-icons/inkomstroy.png'), asset('group-scenes/inkomstroy-v2.jpg')],
+];
+
 function Logo({ onHome }) {
   return <button className="logo" onClick={() => onHome?.()} aria-label="На главную"><span>TAV</span> IMPORT</button>;
 }
 
-function Header({ cartCount, onCart, onNavigate }) {
+function Header({ onNavigate, onApply }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const links = [['Главная', 'hero'], ['Услуги', 'process'], ['Направления', 'directions'], ['Кейсы', 'cases'], ['О компании', 'advantages'], ['Контакты', 'contacts']];
+  const links = [['Главная', 'hero'], ['Услуги', 'process'], ['Направления', 'directions'], ['Кейсы', 'cases'], ['О компании', 'group'], ['Контакты', 'contacts']];
   const go = (id) => {
     onNavigate('/', id);
     setMenuOpen(false);
@@ -165,8 +185,7 @@ function Header({ cartCount, onCart, onNavigate }) {
     <div className="header-side">
       <button className="search-trigger" onClick={() => go('directions')} aria-label="Поиск по направлениям"><MagnifyingGlass /></button>
       <a href="tel:+375290000000"><Phone weight="bold" /> +375 29 000-00-00</a>
-      <button className="cart-button" onClick={onCart} aria-label="Открыть корзину"><ShoppingCart />{cartCount > 0 && <b>{cartCount}</b>}</button>
-      <button className="outline-cta" onClick={() => go('request')}>ПОЛУЧИТЬ КП</button>
+      <button className="outline-cta" onClick={() => onApply('Расчёт заявки')}>РАССЧИТАТЬ ЗАЯВКУ</button>
       <button className="menu-button" onClick={() => setMenuOpen(v => !v)} aria-label="Меню">{menuOpen ? <X /> : <List />}</button>
     </div>
   </header>;
@@ -176,75 +195,178 @@ function SectionTitle({ eyebrow, children }) {
   return <div className="section-heading">{eyebrow && <span>{eyebrow}</span>}<h2>{children}</h2><i /></div>;
 }
 
-function DirectionCard({ item, onAdd, onNavigate }) {
+function GroupSection() {
+  const treeRef = useRef(null);
+  const parentRef = useRef(null);
+  const companyRefs = useRef([]);
+  const [connectorGeometry, setConnectorGeometry] = useState({ width: 1320, parentX: 660, targets: [208, 660, 1112] });
+
+  useEffect(() => {
+    const updateConnectors = () => {
+      const tree = treeRef.current;
+      const parent = parentRef.current;
+      const companies = companyRefs.current.filter(Boolean);
+      if (!tree || !parent || companies.length !== groupCompanies.length) return;
+
+      const treeRect = tree.getBoundingClientRect();
+      const parentRect = parent.getBoundingClientRect();
+      setConnectorGeometry({
+        width: treeRect.width,
+        parentX: parentRect.left - treeRect.left + parentRect.width / 2,
+        targets: companies.map((card) => {
+          const rect = card.getBoundingClientRect();
+          return rect.left - treeRect.left + rect.width / 2;
+        }),
+      });
+    };
+
+    updateConnectors();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateConnectors);
+    [treeRef.current, parentRef.current, ...companyRefs.current].filter(Boolean).forEach(node => observer?.observe(node));
+    window.addEventListener('resize', updateConnectors);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', updateConnectors);
+    };
+  }, []);
+
+  return <section className="section group-section" id="group">
+    <SectionTitle eyebrow="Группа компаний">СТРУКТУРА TAV GROUP</SectionTitle>
+    <div className="group-tree" ref={treeRef}>
+      <article className="group-parent-card" ref={parentRef}>
+        <img className="group-card-photo" src={asset('group-scenes/tav-group-russian-flag-v4.jpg')} alt="" aria-hidden="true" />
+        <div className="group-card-copy">
+          <span>ЕДИНАЯ ГРУППА</span>
+          <h2>TAV <b>GROUP</b></h2>
+          <p>Объединяем профильные компании для комплексной реализации проектов.</p>
+        </div>
+      </article>
+      <svg className="group-connectors" viewBox={`0 0 ${connectorGeometry.width} 80`} preserveAspectRatio="none" aria-hidden="true">
+        {connectorGeometry.targets.map((targetX, index) => <line key={index} x1={connectorGeometry.parentX + (index - 1) * 30} y1="0" x2={targetX} y2="80" />)}
+      </svg>
+      <div className="group-company-list">
+        {groupCompanies.map(([name, label, description, icon, photo], index) => <article className="group-company-card" key={name} ref={(node) => { companyRefs.current[index] = node; }}>
+          <img className="group-card-photo" src={photo} alt="" aria-hidden="true" />
+          <b>{String(index + 1).padStart(2, '0')}</b>
+          <div className="group-card-copy">
+            <img className="group-company-icon" src={icon} alt="" aria-hidden="true" />
+            <span>{label}</span>
+            <h3>{name}</h3>
+            <p>{description}</p>
+          </div>
+        </article>)}
+      </div>
+    </div>
+  </section>;
+}
+
+function DirectionCard({ item, onApply, onNavigate }) {
   return <article className="direction-card">
     <a className="direction-card-link" href={withBase(item.path)} onClick={(event) => { event.preventDefault(); onNavigate(item.path); }} aria-label={`Открыть страницу «${item.name}»`} />
     <img src={item.image} alt={item.name} />
     <div className="direction-shade" />
     <span className="direction-number">{String(item.id).padStart(2, '0')}</span>
     <div className="direction-copy"><h3>{item.name}</h3><span>ПОДРОБНЕЕ <ArrowRight /></span></div>
-    <button className="direction-add" onClick={() => onAdd(item)} aria-label={`Добавить в подборку: ${item.name}`}><Plus /></button>
+    <button className="direction-apply" onClick={() => onApply(item.name)}>ОТПРАВИТЬ ЗАЯВКУ</button>
   </article>;
 }
 
-function LeadForm({ compact = false, onSuccess }) {
-  const [fileName, setFileName] = useState('');
-  const submit = (event) => {
+function ApplicationModal({ service, onClose, onSuccess }) {
+  useEffect(() => {
+    if (!service) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = event => { if (event.key === 'Escape') onClose(); };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [service, onClose]);
+
+  if (!service) return null;
+  const submit = event => {
     event.preventDefault();
-    const form = event.currentTarget;
-    onSuccess?.(form.elements.name?.value || '');
-    form.reset();
-    setFileName('');
+    const firstName = event.currentTarget.elements.firstName.value;
+    onSuccess(firstName);
+    onClose();
   };
-  return <form className={`lead-form ${compact ? 'compact' : ''}`} onSubmit={submit}>
-    <div className="field-grid">
-      <label><span>Имя</span><input name="name" placeholder="Ваше имя" required /></label>
-      <label><span>Телефон</span><input name="phone" type="tel" placeholder="+375 (__) ___-__-__" required /></label>
-      <label><span>E-mail</span><input name="email" type="email" placeholder="mail@company.by" /></label>
-      <label><span>Направление</span><select name="direction" defaultValue=""><option value="" disabled>Выберите направление</option>{directions.map(item => <option key={item.id}>{item.name}</option>)}</select><CaretDown /></label>
-    </div>
-    <label className="message-field"><span>Описание задачи</span><textarea name="message" placeholder="Что нужно найти и доставить?" required /></label>
-    <div className="form-actions">
-      <label className="file-button"><Paperclip /><span>{fileName || 'ПРИКРЕПИТЬ ФАЙЛ'}</span><input type="file" onChange={(e) => setFileName(e.target.files?.[0]?.name || '')} /></label>
-      <button className="orange-button" type="submit">ПОЛУЧИТЬ РАСЧЁТ <ArrowRight /></button>
-    </div>
-    <label className="consent"><input type="checkbox" required /> <span>Я согласен на обработку персональных данных и получение коммерческой информации.</span></label>
-  </form>;
+  return <div className="application-modal" role="dialog" aria-modal="true" aria-labelledby="application-title">
+    <button className="application-backdrop" onClick={onClose} aria-label="Закрыть окно заявки" />
+    <section className="application-dialog">
+      <button className="application-close" onClick={onClose} aria-label="Закрыть"><X /></button>
+      <span className="application-kicker">ЗАЯВКА / TAV IMPORT</span>
+      <h2 id="application-title">ОТПРАВИТЬ ЗАЯВКУ</h2>
+      <p>Оставьте контакты — уточним задачу и подготовим предложение по выбранной услуге.</p>
+      <form onSubmit={submit}>
+        <div className="application-grid">
+          <label><span>Имя</span><input name="firstName" autoComplete="given-name" placeholder="Ваше имя" autoFocus required /></label>
+          <label><span>Фамилия</span><input name="lastName" autoComplete="family-name" placeholder="Ваша фамилия" required /></label>
+          <label><span>Номер телефона</span><input name="phone" type="tel" autoComplete="tel" placeholder="+375 (__) ___-__-__" required /></label>
+          <label><span>Выбранная услуга</span><input name="service" value={service} readOnly /></label>
+        </div>
+        <label className="application-consent"><input type="checkbox" required /><span>Я согласен на обработку персональных данных.</span></label>
+        <button className="orange-button application-submit" type="submit">ОТПРАВИТЬ ЗАЯВКУ <ArrowRight /></button>
+      </form>
+    </section>
+  </div>;
 }
 
-function CartDrawer({ open, items, onClose, setItems, onRequest }) {
-  const count = items.reduce((sum, item) => sum + item.qty, 0);
-  const update = (id, delta) => setItems(items.map(item => item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item));
-  return <><button className={`drawer-backdrop ${open ? 'open' : ''}`} onClick={onClose} aria-label="Закрыть корзину" />
-    <aside className={`cart-drawer ${open ? 'open' : ''}`} aria-hidden={!open}>
-      <div className="drawer-head"><div><span>ПОДБОРКА</span><h2>ОБОРУДОВАНИЕ <b>{count}</b></h2></div><button onClick={onClose} aria-label="Закрыть корзину"><X /></button></div>
-      <div className="drawer-body">
-        {items.length === 0 ? <div className="empty-cart"><Package /><h3>ПОДБОРКА ПУСТА</h3><p>Добавьте нужные направления — мы подготовим предложение по каждому.</p></div> : items.map(item => <article className="cart-row" key={item.id}>
-          <img src={item.image} alt="" /><div><h3>{item.name}</h3><p>Предварительный подбор</p><div className="quantity"><button onClick={() => update(item.id, -1)} aria-label={`Уменьшить количество: ${item.name}`}><Minus /></button><span>{item.qty}</span><button onClick={() => update(item.id, 1)} aria-label={`Увеличить количество: ${item.name}`}><Plus /></button></div></div><button className="remove-item" onClick={() => setItems(items.filter(x => x.id !== item.id))} aria-label={`Удалить из подборки: ${item.name}`}><Trash /></button>
-        </article>)}
-      </div>
-      {items.length > 0 && <div className="drawer-footer"><p><span>Позиций в запросе</span><strong>{count}</strong></p><button className="orange-button" onClick={onRequest}>ОТПРАВИТЬ НА РАСЧЁТ <ArrowRight /></button></div>}
-    </aside>
-  </>;
-}
-
-function ChatWidget() {
+function ChatWidget({ request }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([{ from: 'agent', text: 'Здравствуйте! Помогу подобрать оборудование и рассчитать доставку.' }]);
   const [draft, setDraft] = useState('');
-  const send = (event) => {
+  const [sending, setSending] = useState(false);
+  const draftRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  useEffect(() => {
+    if (!request) return;
+    setOpen(true);
+    setDraft(request.text);
+  }, [request]);
+  useEffect(() => {
+    const field = draftRef.current;
+    if (!field) return;
+    field.style.height = '0px';
+    field.style.height = `${Math.min(Math.max(field.scrollHeight, 57), 124)}px`;
+  }, [draft, open]);
+  useEffect(() => {
+    if (open) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [messages, open, sending]);
+  const send = async (event) => {
     event.preventDefault();
-    if (!draft.trim()) return;
-    setMessages(prev => [...prev, { from: 'user', text: draft.trim() }, { from: 'agent', text: 'Спасибо! Консультант подключится в течение нескольких минут.' }]);
+    const text = draft.trim();
+    if (!text || sending) return;
+    const nextMessages = [...messages, { from: 'user', text }];
+    setMessages(nextMessages);
     setDraft('');
+    setSending(true);
+    try {
+      const response = await fetch(withBase('/api/chat'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: nextMessages
+            .filter(message => ['user', 'agent'].includes(message.from))
+            .map(message => ({ role: message.from === 'user' ? 'user' : 'assistant', content: message.text })),
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.message) throw new Error(result.error || 'Не удалось получить ответ.');
+      setMessages(current => [...current, { from: 'agent', text: result.message }]);
+    } catch (error) {
+      setMessages(current => [...current, { from: 'error', text: error.message || 'Не удалось получить ответ. Попробуйте ещё раз.' }]);
+    } finally {
+      setSending(false);
+    }
   };
   return <div className="chat-widget">
-    {open && <section className="chat-panel">
-      <header><div className="agent-avatar"><Headset /></div><div><strong>Консультант TAV</strong><span><i /> Сейчас онлайн</span></div><button onClick={() => setOpen(false)} aria-label="Закрыть чат"><X /></button></header>
-      <div className="chat-messages">{messages.map((m, i) => <p className={m.from} key={i}>{m.text}</p>)}</div>
-      <form onSubmit={send}><input value={draft} onChange={e => setDraft(e.target.value)} placeholder="Введите сообщение…" aria-label="Сообщение" /><button aria-label="Отправить"><PaperPlaneTilt weight="fill" /></button></form>
+    {open && <section className="chat-panel" aria-label="Чат с ИИ-консультантом">
+      <header><div className="agent-avatar"><Headset /></div><div><strong>Консультант TAV</strong><span><i /> ИИ-консультант · онлайн</span></div><button onClick={() => setOpen(false)} aria-label="Закрыть чат"><X /></button></header>
+      <div className="chat-messages" aria-live="polite">{messages.map((m, i) => <p className={m.from} key={`${m.from}-${i}`}>{m.text}</p>)}{sending && <p className="agent typing" aria-label="Консультант печатает"><i /><i /><i /></p>}<span ref={messagesEndRef} /></div>
+      <form onSubmit={send}><textarea ref={draftRef} rows="1" value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.form.requestSubmit(); } }} placeholder="Введите сообщение…" aria-label="Сообщение" autoFocus /><button type="submit" aria-label="Отправить" disabled={sending || !draft.trim()}><PaperPlaneTilt weight="fill" /></button></form>
     </section>}
-    <button className="chat-toggle" onClick={() => setOpen(v => !v)} aria-label="Чат с консультантом">{open ? <X /> : <ChatCircleDots weight="fill" />}<span>Задать вопрос</span></button>
+    <button className="chat-toggle" onClick={() => setOpen(v => !v)} aria-label="Открыть чат-менеджер">{open ? <X /> : <ChatCircleDots weight="fill" />}<span>Чат-менеджер</span></button>
   </div>;
 }
 
@@ -259,43 +381,55 @@ function ContactStrip() {
 }
 
 const directionSteps = [
-  ['01', 'ФИКСИРУЕМ ЗАДАЧУ', 'Уточняем параметры, комплектацию, бюджет и сроки проекта.'],
-  ['02', 'ПОДБИРАЕМ РЕШЕНИЕ', 'Сравниваем производителей и согласовываем техническое предложение.'],
-  ['03', 'ПРОВЕРЯЕМ НА ЗАВОДЕ', 'Контролируем производство, испытания, упаковку и документы.'],
-  ['04', 'ДОСТАВЛЯЕМ НА ОБЪЕКТ', 'Организуем логистику, таможню и передачу оборудования клиенту.'],
+  { number: '01', title: 'ФИКСИРУЕМ ЗАДАЧУ', text: 'Уточняем параметры, комплектацию, бюджет и сроки проекта.', icon: asset('process-icons/task.png') },
+  { number: '02', title: 'ПОДБИРАЕМ РЕШЕНИЕ', text: 'Сравниваем производителей и согласовываем техническое предложение.', icon: asset('process-icons/solution.png') },
+  { number: '03', title: 'ПРОВЕРЯЕМ НА ЗАВОДЕ', text: 'Контролируем производство, испытания, упаковку и документы.', icon: asset('process-icons/inspection.png') },
+  { number: '04', title: 'ДОСТАВЛЯЕМ НА ОБЪЕКТ', text: 'Организуем логистику, таможню и передачу оборудования клиенту.', icon: asset('process-icons/delivery.png') },
 ];
 
-function DirectionPage({ item, onNavigate, onAdd, onSuccess }) {
+function DirectionPage({ item, onNavigate, onApply, onQuestion }) {
   const otherDirections = directions.filter(direction => direction.id !== item.id);
-  const scrollToRequest = () => document.getElementById('request')?.scrollIntoView({ behavior: 'smooth' });
   return <main className="direction-page">
     <section className="direction-detail-hero" id="hero">
-      <img src={item.image} alt={item.pageTitle} />
+      <img src={item.heroImage} alt={item.pageTitle} />
       <div className="direction-detail-overlay" />
       <div className="direction-detail-content">
         <button className="direction-breadcrumb" onClick={() => onNavigate('/', 'directions')}>ГЛАВНАЯ / НАПРАВЛЕНИЯ / <b>{item.name.toUpperCase()}</b></button>
         <span className="direction-kicker">{String(item.id).padStart(2, '0')} / НАПРАВЛЕНИЕ ПОСТАВОК</span>
         <h1>{item.pageTitle}</h1>
         <p>{item.lead}</p>
-        <div className="direction-detail-actions"><button className="orange-button" onClick={scrollToRequest}>РАССЧИТАТЬ ПОСТАВКУ <ArrowRight /></button><button className="direction-outline-button" onClick={() => onAdd(item)}><Plus /> ДОБАВИТЬ В ПОДБОРКУ</button></div>
+        <div className="direction-detail-actions">
+          <button className="orange-button" onClick={() => onApply(item.name)}>ОТПРАВИТЬ ЗАЯВКУ <ArrowRight /></button>
+          <button className="direction-hero-question" type="button" onClick={() => onQuestion(item.questionSubject, true)}><ChatCircleDots weight="fill" /> ЗАДАТЬ ВОПРОС</button>
+        </div>
       </div>
-      <div className="direction-facts">{item.facts.map(([value, label]) => <article key={label}><strong>{value}</strong><span>{label}</span></article>)}</div>
-    </section>
-
-    <section className="section direction-overview">
-      <div><span className="section-label">РАБОТАЕМ ПОД КЛЮЧ</span><h2>ПОСТАВКА БЕЗ РАЗРЫВОВ<br />В ОТВЕТСТВЕННОСТИ</h2><p>{item.description}</p></div>
-      <div className="direction-benefits">{item.benefits.map(benefit => <p key={benefit}><CheckCircle weight="fill" />{benefit}</p>)}</div>
     </section>
 
     <section className="section direction-supply">
       <SectionTitle eyebrow="Подбираем отдельные единицы и комплектные линии">ЧТО ПОСТАВЛЯЕМ</SectionTitle>
-      <div className="direction-supply-grid">{item.supplies.map((supply, index) => <article key={supply}><span>{String(index + 1).padStart(2, '0')}</span><Cube /><h3>{supply}</h3><button onClick={scrollToRequest}>ЗАПРОСИТЬ РАСЧЁТ <ArrowRight /></button></article>)}</div>
+      <div className="direction-supply-grid">{item.supplies.map((supply, index) => <article className="direction-supply-card" key={supply}>
+        <img className="direction-supply-photo" src={asset(`supply-cards/${supplyCardImages[item.id][index]}.jpg`)} alt="" aria-hidden="true" />
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <div className="direction-supply-copy">
+          <h3>{supply}</h3>
+          <span className="direction-supply-cta">ВЫБРАТЬ ДЕЙСТВИЕ <ArrowRight /></span>
+        </div>
+        <div className="direction-supply-actions">
+          <button className="direction-question-button" type="button" onClick={() => onQuestion(supply)}>ЗАДАТЬ ВОПРОС</button>
+          <button className="direction-application-button" type="button" onClick={() => onApply(supply)}>ОТПРАВИТЬ ЗАЯВКУ</button>
+        </div>
+      </article>)}</div>
     </section>
 
     <section className="direction-workflow">
       <div className="section direction-workflow-inner">
-        <div className="direction-workflow-head"><span className="section-label">ПРОЦЕСС</span><h2>КАК ПРОХОДИТ ПОСТАВКА</h2><p>Один менеджер ведёт проект от первого запроса до передачи оборудования на вашем складе.</p></div>
-        <div className="direction-workflow-grid">{directionSteps.map(([number, title, text]) => <article key={number}><b>{number}</b><div><h3>{title}</h3><p>{text}</p></div></article>)}</div>
+        <div className="direction-workflow-head"><div className="workflow-label"><span>ПРОЦЕСС</span><i aria-hidden="true" /></div><h2>КАК ПРОХОДИТ ПОСТАВКА</h2><p>Один менеджер ведёт проект от первого запроса<br />до передачи оборудования на вашем складе.</p></div>
+        <div className="direction-workflow-grid">{directionSteps.map((step) => <article className="workflow-step" key={step.number}>
+            <img className="workflow-icon" src={step.icon} alt="" aria-hidden="true" />
+            <div className="workflow-number"><b>{step.number}</b></div>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </article>)}</div>
       </div>
     </section>
 
@@ -304,10 +438,6 @@ function DirectionPage({ item, onNavigate, onAdd, onSuccess }) {
       <div className="direction-other-grid">{otherDirections.map(direction => <a href={withBase(direction.path)} key={direction.id} onClick={(event) => { event.preventDefault(); onNavigate(direction.path); }}><img src={direction.image} alt="" /><span>{String(direction.id).padStart(2, '0')}</span><h3>{direction.name}</h3><ArrowRight /></a>)}</div>
     </section>
 
-    <section className="section request-section direction-request" id="request">
-      <div className="request-copy"><img src={item.image} alt="" /><div><span>{item.name}</span><h2>РАССЧИТАЕМ ПОСТАВКУ<br />ПОД ВАШУ ЗАДАЧУ</h2><p>Прикрепите спецификацию или опишите оборудование — подготовим первичный подбор и расчёт.</p></div></div>
-      <LeadForm onSuccess={onSuccess} />
-    </section>
     <ContactStrip />
   </main>;
 }
@@ -315,7 +445,7 @@ function DirectionPage({ item, onNavigate, onAdd, onSuccess }) {
 function Footer({ onNavigate }) {
   return <footer className="site-footer">
     <div className="footer-brand"><Logo onHome={() => onNavigate('/')} /><p>Импорт промышленного оборудования,<br />станков, спецтехники и запчастей<br />из Азии в РБ и РФ.</p><small>© TAV IMPORT, 2026</small></div>
-    <div><h4>КОМПАНИЯ</h4><button onClick={() => onNavigate('/', 'advantages')}>О компании</button><button onClick={() => onNavigate('/', 'advantages')}>Команда</button><button onClick={() => onNavigate('/', 'contacts')}>Документы</button><button onClick={() => onNavigate('/', 'cases')}>Новости</button></div>
+    <div><h4>КОМПАНИЯ</h4><button onClick={() => onNavigate('/', 'group')}>О компании</button><button onClick={() => onNavigate('/', 'group')}>Группа компаний</button><button onClick={() => onNavigate('/', 'contacts')}>Документы</button><button onClick={() => onNavigate('/', 'cases')}>Новости</button></div>
     <div><h4>УСЛУГИ</h4><button onClick={() => onNavigate('/', 'process')}>Поиск оборудования</button><button onClick={() => onNavigate('/', 'process')}>Инспекция</button><button onClick={() => onNavigate('/', 'process')}>Логистика и доставка</button><button onClick={() => onNavigate('/', 'process')}>Таможенное оформление</button></div>
     <div><h4>НАПРАВЛЕНИЯ</h4>{directions.map(item => <button key={item.id} onClick={() => onNavigate(item.path)}>{item.name}</button>)}</div>
     <div className="messengers"><h4>МЫ В МЕССЕНДЖЕРАХ</h4><div><a href="#telegram" aria-label="Telegram"><PaperPlaneTilt weight="fill" /></a><a href="#whatsapp" aria-label="WhatsApp"><Phone weight="fill" /></a><a href="#viber" aria-label="Viber"><ChatCircleDots weight="fill" /></a></div></div>
@@ -325,10 +455,10 @@ function Footer({ onNavigate }) {
 export function App() {
   const qaMode = new URLSearchParams(window.location.search).has('qa');
   const [path, setPath] = useState(readAppPath());
-  const [cart, setCart] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
+  const [applicationService, setApplicationService] = useState('');
+  const [chatRequest, setChatRequest] = useState(null);
+  const [activeCase, setActiveCase] = useState(0);
   const [notice, setNotice] = useState('');
-  const count = useMemo(() => cart.reduce((sum, item) => sum + item.qty, 0), [cart]);
   const activeDirection = directions.find(item => item.path === path);
   useEffect(() => {
     const syncPath = () => setPath(readAppPath());
@@ -347,42 +477,43 @@ export function App() {
       else window.scrollTo({ top: 0, behavior: 'smooth' });
     }));
   };
-  const addToCart = item => {
-    setCart(prev => prev.some(x => x.id === item.id) ? prev.map(x => x.id === item.id ? { ...x, qty: x.qty + 1 } : x) : [...prev, { ...item, qty: 1 }]);
-    setNotice(`${item.name}: добавлено в подборку`);
-  };
-  const requestFromCart = () => { setCartOpen(false); document.getElementById('request')?.scrollIntoView({ behavior: 'smooth' }); };
   const leadSuccess = name => setNotice(`${name ? `${name}, заявка` : 'Заявка'} принята. Мы свяжемся с вами в ближайшее время.`);
+  const askQuestion = (subject, broad = false) => setChatRequest({ id: Date.now(), text: broad
+    ? `Здравствуйте, у меня есть вопрос по поставке ${subject}.`
+    : `Здравствуйте, у меня есть вопрос по поставке «${subject}».`
+  });
 
   if (activeDirection) return <div className={`app-shell ${qaMode ? 'qa-mode' : ''}`}>
-    <Header cartCount={count} onCart={() => setCartOpen(true)} onNavigate={navigate} />
-    <DirectionPage item={activeDirection} onNavigate={navigate} onAdd={addToCart} onSuccess={leadSuccess} />
+    <Header onNavigate={navigate} onApply={setApplicationService} />
+    <DirectionPage item={activeDirection} onNavigate={navigate} onApply={setApplicationService} onQuestion={askQuestion} />
     <Footer onNavigate={navigate} />
-    <CartDrawer open={cartOpen} items={cart} setItems={setCart} onClose={() => setCartOpen(false)} onRequest={requestFromCart} />
-    <ChatWidget />
+    <ApplicationModal service={applicationService} onClose={() => setApplicationService('')} onSuccess={leadSuccess} />
+    <ChatWidget request={chatRequest} />
     {notice && <div className="toast"><CheckCircle weight="fill" /><span>{notice}</span><button onClick={() => setNotice('')}><X /></button></div>}
   </div>;
 
   return <div className={`app-shell ${qaMode ? 'qa-mode' : ''}`}>
-    <Header cartCount={count} onCart={() => setCartOpen(true)} onNavigate={navigate} />
+    <Header onNavigate={navigate} onApply={setApplicationService} />
     <main>
       <section className="hero" id="hero">
-        <img src={asset('hero-industrial.webp')} alt="Доставка промышленного оборудования" />
+        <img src={asset('hero-industrial-v3.png')} alt="Погрузка промышленного насосного модуля в морском терминале" />
         <div className="hero-overlay" />
         <img className="hero-route-map" src={asset('hero-route-map.webp')} alt="" aria-hidden="true" />
         <div className="hero-content">
           <span>TAV IMPORT</span>
           <h1>ПРОМЫШЛЕННОЕ<br />ОБОРУДОВАНИЕ ИЗ АЗИИ<br />ПОД КЛЮЧ</h1>
           <p>Находим, проверяем и доставляем оборудование<br />для вашего бизнеса в Беларусь и Россию</p>
-          <div className="hero-actions"><button className="orange-button" onClick={() => document.getElementById('request')?.scrollIntoView({ behavior: 'smooth' })}>РАССЧИТАТЬ ДОСТАВКУ <ArrowRight /></button><button onClick={() => document.getElementById('cases')?.scrollIntoView({ behavior: 'smooth' })}>СМОТРЕТЬ КЕЙСЫ <ArrowRight /></button></div>
+          <div className="hero-actions"><button className="orange-button" onClick={() => setApplicationService('Расчёт заявки')}>РАССЧИТАТЬ ЗАЯВКУ <ArrowRight /></button></div>
           <div className="hero-points"><span><MapPin /> РБ + РФ</span><span><Cube /> ПОЛНЫЙ ЦИКЛ</span><span><ShieldCheck /> КОНТРОЛЬ КАЧЕСТВА</span></div>
         </div>
       </section>
 
       <section className="section directions" id="directions">
         <SectionTitle>НАПРАВЛЕНИЯ ПОСТАВОК</SectionTitle>
-        <div className="directions-grid">{directions.map(item => <DirectionCard key={item.id} item={item} onAdd={addToCart} onNavigate={navigate} />)}</div>
+        <div className="directions-grid">{directions.map(item => <DirectionCard key={item.id} item={item} onApply={setApplicationService} onNavigate={navigate} />)}</div>
       </section>
+
+      <GroupSection />
 
       <section className="section process-section" id="process">
         <SectionTitle eyebrow="От заявки до оборудования на вашем складе">БЕРЁМ НА СЕБЯ ВЕСЬ ПРОЦЕСС</SectionTitle>
@@ -390,25 +521,21 @@ export function App() {
       </section>
 
       <section className="section advantages" id="advantages">
-        <div className="advantages-lead"><h2>ПОЧЕМУ<br />TAV IMPORT</h2><p><strong>7</strong><span>ЭТАПОВ<br />ПОД КОНТРОЛЕМ</span></p></div>
+        <div className="advantages-lead"><h2>ПОЧЕМУ TAV IMPORT</h2><p><strong>7</strong><span>ЭТАПОВ<br />ПОД КОНТРОЛЕМ</span></p></div>
         <div className="advantages-grid">{advantages.map(([label, Icon]) => <article key={label}><Icon /><h3>{label}</h3></article>)}</div>
       </section>
 
       <section className="section cases" id="cases">
-        <div className="cases-title"><SectionTitle>РЕАЛЬНЫЕ ПОСТАВКИ</SectionTitle><div><button aria-label="Назад">‹</button><button aria-label="Вперёд">›</button></div></div>
-        <div className="cases-grid">{cases.map(item => <article className="case-card" key={item.id}><img src={item.image} alt={item.title} /><div><h3>{item.title}</h3><p>{item.meta.map(x => <span key={x}>{x}</span>)}</p><button onClick={() => addToCart({ ...item, name: item.title })}>В ПОДБОРКУ <Plus /></button></div></article>)}</div>
-      </section>
-
-      <section className="section request-section" id="request">
-        <div className="request-copy"><img src={asset('request-container.webp')} alt="Контейнерная доставка оборудования" /><div><h2>РАССЧИТАЕМ ПОСТАВКУ<br />ПОД ВАШУ ЗАДАЧУ</h2><p>Прикрепите спецификацию или опишите оборудование — подготовим предварительный расчёт.</p></div></div>
-        <LeadForm onSuccess={leadSuccess} />
+        <div className="cases-title"><SectionTitle>КЕЙСЫ</SectionTitle></div>
+        <div className="cases-grid">{cases.map(item => <article className="case-card" id={`case-${item.id}`} key={item.id}><img src={item.image} alt={item.title} /><div><h3>{item.title}</h3><p>{item.meta.map(x => <span key={x}>{x}</span>)}</p><button onClick={() => setApplicationService(item.title)}>ОТПРАВИТЬ ЗАЯВКУ <ArrowRight /></button></div></article>)}</div>
+        <div className="case-pagination" aria-label="Навигация по реальным поставкам">{cases.map((item, index) => <button className={index === activeCase ? 'is-active' : ''} key={item.id} type="button" aria-label={`Показать кейс ${index + 1}`} aria-current={index === activeCase ? 'true' : undefined} onClick={() => { setActiveCase(index); document.getElementById(`case-${item.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' }); }} />)}</div>
       </section>
 
       <ContactStrip />
     </main>
     <Footer onNavigate={navigate} />
-    <CartDrawer open={cartOpen} items={cart} setItems={setCart} onClose={() => setCartOpen(false)} onRequest={requestFromCart} />
-    <ChatWidget />
+    <ApplicationModal service={applicationService} onClose={() => setApplicationService('')} onSuccess={leadSuccess} />
+    <ChatWidget request={chatRequest} />
     {notice && <div className="toast"><CheckCircle weight="fill" /><span>{notice}</span><button onClick={() => setNotice('')}><X /></button></div>}
   </div>;
 }

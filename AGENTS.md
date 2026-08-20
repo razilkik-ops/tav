@@ -11,9 +11,46 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 ## Prototype-specific direction
 
 - Visual source of truth: `/Users/pasha/Library/Containers/ru.keepcoder.Telegram/Data/tmp/tav-import-4k.png`.
-- Preserve the dark industrial art direction, orange accents, condensed headings, dense B2B landing-page rhythm, equipment imagery, lead form, selection cart, and consultant chat.
+- Preserve the dark industrial art direction, orange accents, condensed headings, dense B2B landing-page rhythm, equipment imagery, lead form, and consultant chat.
+- Use a consistent rounded design language across the full site: 24–30px radii for major cards and panels, 12–18px for controls and fields, and smaller radii for badges and indicators, while preserving the dark industrial character.
+- Keep the site header and the home-page hero image square with no border radius. Use fully pill-shaped primary/header CTA buttons and text inputs. Card radii remain fixed and must not animate or increase on pointer hover.
+- The main hero image should feel like a premium documentary photograph of a real industrial logistics operation: believable workers, rigging, machinery, lighting, and materials, with a clean dark negative-space area on the left for the text content.
+- The current hero cargo is an open industrial pumping module on a steel skid, not an enclosed CNC machine.
+- The TAV Group company-structure section must use a simple CSS hierarchy with exactly four restrained panels: one primary TAV Group panel and three subsidiary panels below it for TAV Bio, TAVDorStroy, and InkomStroyTorg. Do not use the previously generated infographic image in this section.
+- Position TAV BIO as the group's medical-import direction: medical equipment and medical devices sourced from China, with licensing, regulatory documentation, and delivery support. Do not describe it as an agricultural or biological-solutions business.
+- TAV Group connector geometry must be tied to the same CSS Grid tracks as the subsidiary panels; do not position desktop connector endpoints with standalone container percentages.
+- The TAV Group hierarchy uses three independent straight orange 2px connector lines from the exact center of each subsidiary card toward the bottom center of the parent card; keep the central line centered, but start the left and right diagonals 30px to either side of it so all three upper endpoints remain visually separate. Measure the rendered card centers so the geometry remains exact at every viewport width and zoom level.
+- Keep approximately 34px of desktop spacing between the three TAV Group subsidiary cards; the connector grid must use the same gap value.
+- The desktop TAV Group subsidiary row uses a roughly 1320px content width, making each of its three cards about 80px wider than the earlier 1080px layout.
+- Each of the three TAV Group subsidiary panels uses its own transparent ImageGen-created thematic icon in the site's orange and cool-white technical line style.
+- The four TAV Group hierarchy panels use dark ImageGen-created thematic photography instead of flat gray bordered boxes, with a left-to-right image fade and 30px corner radius. The parent TAV Group panel is filled edge-to-edge by a textured Russian tricolor; its left half stays visible and its right half fades smoothly into a dark overlay behind the copy.
+- The TAV Group tricolor asset must use the exact desktop parent-card aspect ratio of 68:21 so all three flag bands remain visible without `object-fit: cover` cropping.
 - Header and footer must remain reusable template components.
 - The “Обсудим ваш проект” contact strip must match the corresponding reference section pixel-for-pixel on desktop, including its full-width left alignment, oversized orange contact icons, four fixed contact columns, and bespoke ImageGen-created industrial Eurasia route-map artwork on the right.
 - The contact strip background must visually match the rendered left edge of the generated route-map artwork with no visible seam; use the asset's dominant left-edge source color `#000a13` as the baseline and prioritize the rendered match over a nominal sampled CSS value.
-- Each of the six “Направления поставок” cards must open a dedicated clean-URL page with direction-specific content while retaining the shared header, footer, contact strip, lead form, selection cart, and consultant chat.
+- Keep the full-width “Обсудим ваш проект” contact strip square with no border radius at any viewport size.
+- Each of the six “Направления поставок” cards must open a dedicated clean-URL page with direction-specific content while retaining the shared header, footer, contact strip, application modal, and consultant chat.
+- The selection cart has been removed. Every service application CTA must open a modal with first name, last name, phone number, and a read-only field prefilled with the selected service.
 - Planned production stack: Node.js, PostgreSQL, Prisma, and amoCRM lead synchronization. The current stage is a frontend visual prototype with realistic local interactions only.
+- The main hero uses one primary “Рассчитать заявку” CTA that opens the application modal; do not show a secondary “Смотреть кейсы” button there.
+- The direction-page “Как проходит поставка” section uses a flat four-column layout on the site's native dark background: icon, number, heading, and description only, with no cards, borders, clipped corners, connectors, arrows, or gray circles.
+- Center all section-level headings across the site. Keep only the main home hero heading and each direction/service page's top image-hero heading left-aligned.
+- Do not show the “Работаем под ключ / Поставка без разрывов в ответственности” overview-and-benefits block on direction/service pages.
+- Label the floating consultant chat button “Чат-менеджер”, not “Задать вопрос”.
+- In the home “Кейсы” section, use centered square pagination indicators below the case cards instead of the arrow controls in the upper-right corner.
+- In the home “Почему TAV IMPORT” section, show the five advantages as unboxed, static icon-and-label items with no card backgrounds, borders, shadows, or hover animation.
+- The home process and “Почему TAV IMPORT” sections use a wider desktop content rail (about 1400px), slightly larger icons, numbers, and supporting labels, plus increased spacing; their section headings keep their existing size.
+- All seven icons in the home process timeline are pure white; keep the timeline, numbered circles, and connectors orange.
+- Keep the top image hero on every direction/service page completely square, with no border radius at any viewport size.
+- Every direction/service page uses its own high-resolution ImageGen-created hero background in an approximately 2:1 landscape composition: the relevant equipment occupies the right side while the left side remains dark and visually clean for the page heading, description, and actions. Do not reuse the smaller category-card images as direction-page hero backgrounds.
+- On all direction pages, omit the three boxed hero facts and the secondary “Рассчитать поставку” button; keep only the primary application CTA.
+- The “Как проходит поставка” section must not introduce a separate background band; it should visually continue the direction page background.
+- The “Другие направления” cards should use a larger desktop height of about 225px; retain the compact mobile override.
+- On every direction page, place “Что поставляем” 60px farther below the top hero. Its six cards use unique ImageGen-created thematic photos with the same left-image/right-dark-fade treatment as the TAV Group hierarchy; do not show the orange cube icons.
+- Keep “Что поставляем” photos visibly brighter than the initial dark treatment, and transition each card shadow smoothly to orange on hover or keyboard focus.
+- On “Что поставляем” hover/focus, blur the card artwork and reveal two pill actions: “Задать вопрос” and “Отправить заявку”. The question action opens Chat Manager with a prefilled item-specific message; the application action opens the existing modal. Keep both actions persistently available on touch devices.
+- Keep the title and action hint in “Что поставляем” cards visually raised from the bottom edge: use about 48px bottom spacing on desktop, about 42px on compact mobile, and additional clearance above the persistent touch actions.
+- Each direction-page hero places a pill-shaped “Задать вопрос” action to the right of “Отправить заявку”; it opens Chat Manager with a broader direction-level question prefilled in grammatically correct Russian.
+- The Chat Manager composer is a multiline textarea that auto-grows upward to show prefilled questions in full; Enter sends and Shift+Enter inserts a line break.
+- The Chat Manager uses the DeepSeek API through the server-only `/api/chat` proxy. Keep `DEEPSEEK_API_KEY` exclusively in server/runtime environment variables, use `deepseek-v4-flash` in non-thinking mode by default, and never expose the key through `VITE_` variables or browser code.
+- Do not render lead forms inside the page flow on the home page or direction pages. Forms appear only in the application modal opened by calculation/application CTAs.
