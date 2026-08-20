@@ -1,5 +1,5 @@
-const DEEPSEEK_ENDPOINT = "https://api.deepseek.com/chat/completions";
-const DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-flash";
+const DEFAULT_DEEPSEEK_ENDPOINT = "https://api.aiai.by/v1/chat/completions";
+const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
 const MAX_MESSAGES = 20;
 const MAX_MESSAGE_LENGTH = 4000;
 const MAX_CONVERSATION_LENGTH = 16000;
@@ -62,7 +62,7 @@ export async function handleChatRequest(request, env = {}, fetchImpl = fetch) {
   const timeout = setTimeout(() => controller.abort(), 25000);
 
   try {
-    const upstream = await fetchImpl(DEEPSEEK_ENDPOINT, {
+    const upstream = await fetchImpl(env.DEEPSEEK_API_URL || DEFAULT_DEEPSEEK_ENDPOINT, {
       method: "POST",
       headers: {
         authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
@@ -71,7 +71,6 @@ export async function handleChatRequest(request, env = {}, fetchImpl = fetch) {
       body: JSON.stringify({
         model: env.DEEPSEEK_MODEL || DEFAULT_DEEPSEEK_MODEL,
         messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
-        thinking: { type: "disabled" },
         temperature: 0.35,
         max_tokens: 500,
         stream: false,

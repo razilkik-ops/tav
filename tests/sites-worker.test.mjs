@@ -21,10 +21,9 @@ test("proxies a validated conversation to DeepSeek without exposing the key", as
   const responseBody = await response.json();
   assert.equal(response.status, 200);
   assert.deepEqual(responseBody, { message: "Уточните рабочую точку и перекачиваемую среду." });
-  assert.equal(upstreamRequest.url, "https://api.deepseek.com/chat/completions");
+  assert.equal(upstreamRequest.url, "https://api.aiai.by/v1/chat/completions");
   assert.equal(upstreamRequest.init.headers.authorization, "Bearer secret-test-key");
-  assert.equal(upstreamRequest.body.model, "deepseek-v4-flash");
-  assert.equal(upstreamRequest.body.thinking.type, "disabled");
+  assert.equal(upstreamRequest.body.model, "deepseek-chat");
   assert.equal(upstreamRequest.body.messages.at(-1).content, "Нужен промышленный насос");
   assert.equal(JSON.stringify(responseBody).includes("secret-test-key"), false);
 });
