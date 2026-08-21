@@ -185,6 +185,53 @@ const groupCompanies = [
   ['INKOMSTROYTORG', 'Комплексные поставки', 'Оборудование, комплектующие и материалы', asset('group-icons/inkomstroy.png'), asset('group-scenes/inkomstroy-v2.jpg')],
 ];
 
+const groupRequisites = {
+  'TAV GROUP': {
+    title: 'ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ «ТАВ-ГРУПП»',
+    items: [
+      ['ИНН', '6732219338'],
+      ['Р/сч', '40702810259000016936'],
+      ['Банк', 'ОАО «Сбербанк ПАО», БИК 046614632'],
+      ['Юридический адрес', '214009, Смоленская область, г. Смоленск, мкр Южный, д. 4, помещ. 3'],
+      ['Телефон', '+7 920 324-70-91'],
+      ['Email', 'tav.wbsale@gmail.com'],
+    ],
+  },
+  'TAV BIO': {
+    title: 'ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ «ТАВ-Биотехнологии»',
+    items: [
+      ['УНП', '791148165'],
+      ['Р/сч', 'BY92 BLNB 3012 0000 3274 4700 0933'],
+      ['Банк', 'ОАО «БНБ-Банк», БИК BLNBBY2X'],
+      ['Юридический адрес', '213974, Могилевская обл., Дрибинский р-н, д. Белая, ул. Франциска Скорины, д. 11'],
+      ['Телефон', '+375 44 7717179'],
+      ['Руководитель', 'Директор Титовцов Андрей Васильевич действует на основании Устава'],
+    ],
+  },
+  TAVDORSTROY: {
+    title: 'ЧАСТНОЕ ПРОИЗВОДСТВЕННО-ТОРГОВОЕ УНИТАРНОЕ ПРЕДПРИЯТИЕ «ТАВДорстрой»',
+    items: [
+      ['УНП', '790988526'],
+      ['Р/сч', 'BY54 BLNB 3012 0000 3015 4100 0933'],
+      ['Банк', 'ОАО «БНБ-Банк», БИК BLNBBY2X'],
+      ['Юридический адрес', '212039, г. Могилёв, ул. Ровчакова, д. 10'],
+      ['Тел./факс', '8 0222 74-60-81'],
+      ['Руководитель', 'Директор Титовцов Андрей Васильевич действует на основании Устава'],
+    ],
+  },
+  INKOMSTROYTORG: {
+    title: 'ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ «Инкомстройторг»',
+    items: [
+      ['УНП', '790635391'],
+      ['Р/сч', 'BY22 BLNB 3012 0000 3015 3000 0933'],
+      ['Банк', 'ОАО «БНБ-Банк», БИК BLNBBY2X'],
+      ['Юридический адрес', '212039, г. Могилев, ул. Ровчакова, д. 10'],
+      ['Тел./факс', '8-0222-74-60-81'],
+      ['Руководитель', 'Директор Титовцов Андрей Васильевич действует на основании Устава'],
+    ],
+  },
+};
+
 function Logo({ onHome }) {
   return <button className="logo" onClick={() => onHome?.()} aria-label="На главную"><span>TAV</span> IMPORT</button>;
 }
@@ -212,6 +259,15 @@ function Header({ onNavigate, onApply }) {
 
 function SectionTitle({ eyebrow, children }) {
   return <div className="section-heading">{eyebrow && <span>{eyebrow}</span>}<h2>{children}</h2><i /></div>;
+}
+
+function GroupRequisites({ company }) {
+  const requisites = groupRequisites[company];
+  return <div className="group-requisites">
+    <span>РЕКВИЗИТЫ</span>
+    <strong>{requisites.title}</strong>
+    <dl>{requisites.items.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+  </div>;
 }
 
 function GroupSection() {
@@ -252,19 +308,20 @@ function GroupSection() {
   return <section className="section group-section" id="group">
     <SectionTitle eyebrow="Группа компаний">СТРУКТУРА TAV GROUP</SectionTitle>
     <div className="group-tree" ref={treeRef}>
-      <article className="group-parent-card" ref={parentRef}>
+      <article className="group-parent-card" ref={parentRef} tabIndex="0" aria-label="TAV Group. Наведите или нажмите, чтобы посмотреть реквизиты.">
         <img className="group-card-photo" src={asset('group-scenes/tav-group-russian-flag-v4.jpg')} alt="" aria-hidden="true" />
         <div className="group-card-copy">
           <span>ЕДИНАЯ ГРУППА</span>
           <h2>TAV <b>GROUP</b></h2>
           <p>Объединяем профильные компании для комплексной реализации проектов.</p>
         </div>
+        <GroupRequisites company="TAV GROUP" />
       </article>
       <svg className="group-connectors" viewBox={`0 0 ${connectorGeometry.width} 80`} preserveAspectRatio="none" aria-hidden="true">
         {connectorGeometry.targets.map((targetX, index) => <line key={index} x1={connectorGeometry.parentX + (index - 1) * 30} y1="0" x2={targetX} y2="80" />)}
       </svg>
       <div className="group-company-list">
-        {groupCompanies.map(([name, label, description, icon, photo], index) => <article className="group-company-card" key={name} ref={(node) => { companyRefs.current[index] = node; }}>
+        {groupCompanies.map(([name, label, description, icon, photo], index) => <article className="group-company-card" key={name} ref={(node) => { companyRefs.current[index] = node; }} tabIndex="0" aria-label={`${name}. Наведите или нажмите, чтобы посмотреть реквизиты.`}>
           <img className="group-card-photo" src={photo} alt="" aria-hidden="true" />
           <b>{String(index + 1).padStart(2, '0')}</b>
           <div className="group-card-copy">
@@ -273,6 +330,7 @@ function GroupSection() {
             <h3>{name}</h3>
             <p>{description}</p>
           </div>
+          <GroupRequisites company={name} />
         </article>)}
       </div>
     </div>
