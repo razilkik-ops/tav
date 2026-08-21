@@ -389,3 +389,23 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--orange);outline-off
   .china-support-points p{font-size:13px}
   .china-support-copy>.orange-button{width:100%;padding-inline:16px;font-size:11px}
 }
+
+/* Website owner requisites. */
+.site-footer .footer-legal{grid-column:1/-1;display:grid;grid-template-columns:.9fr 1.25fr 1.35fr;gap:32px;margin-top:6px;padding-top:28px;border-top:1px solid rgba(255,255,255,.12);color:#849199}
+.footer-legal-heading,.footer-legal address,.footer-bank{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.footer-legal-heading>span,.footer-legal address>span,.footer-bank>span{margin-bottom:4px;color:#687780;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.footer-legal strong,.footer-legal b{color:#b8c1c6;font-size:11px;font-style:normal;font-weight:500;line-height:1.5}
+.footer-legal small,.footer-legal a{color:#849199;font-size:10px;font-style:normal;line-height:1.5}
+.footer-legal address{font-style:normal}
+.footer-legal address>span:not(:first-child){margin-top:6px}
+.footer-legal address>a{margin-top:5px;color:#aeb8bd;transition:color .2s ease}
+.footer-legal address>a:hover{color:var(--orange)}
+.footer-bank small{overflow-wrap:anywhere}
+@media(max-width:820px){
+  .site-footer .footer-legal{grid-template-columns:1fr 1.45fr;gap:25px 34px}
+  .footer-bank{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .site-footer .footer-legal{grid-template-columns:1fr;gap:22px;margin-top:2px;padding-top:24px}
+  .footer-bank{grid-column:auto}
+}

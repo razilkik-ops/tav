@@ -566,6 +566,11 @@ function Footer({ onNavigate }) {
     <div><h4>УСЛУГИ</h4><button onClick={() => onNavigate('/', 'process')}>Поиск оборудования</button><button onClick={() => onNavigate('/', 'process')}>Инспекция</button><button onClick={() => onNavigate('/', 'process')}>Логистика и доставка</button><button onClick={() => onNavigate('/', 'process')}>Таможенное оформление</button></div>
     <div><h4>НАПРАВЛЕНИЯ</h4>{directions.map(item => <button key={item.id} onClick={() => onNavigate(item.path)}>{item.name}</button>)}</div>
     <div className="messengers"><h4>МЫ В МЕССЕНДЖЕРАХ</h4><div><a href="#telegram" aria-label="Telegram"><PaperPlaneTilt weight="fill" /></a><a href="#whatsapp" aria-label="WhatsApp"><Phone weight="fill" /></a><a href="#viber" aria-label="Viber"><ChatCircleDots weight="fill" /></a></div></div>
+    <section className="footer-legal" aria-label="Реквизиты владельца сайта">
+      <div className="footer-legal-heading"><span>РЕКВИЗИТЫ ВЛАДЕЛЬЦА САЙТА</span><strong>ИП Титовцов Андрей Васильевич</strong><small>УНП 790925873</small></div>
+      <address><span>Адрес юридический</span><b>213051, Могилевская обл., г. Белыничи, ул. Парковая, д. 8</b><span>Адрес почтовый</span><b>212039, г. Могилев, ул. Ровчакова, д. 10</b><a href="tel:+375222746081">Тел./факс: 8 0222 746081</a></address>
+      <div className="footer-bank"><span>Банковские реквизиты</span><b>ОАО «БНБ-Банк» · БИК BLNBBY2X</b><small>BYN · BY07 BLNB 3013 0000 2966 4100 0933</small><small>EUR · BY19 BLNB 3013 0000 2966 4100 1978</small><small>RUB · BY43 BLNB 3013 0000 2966 4100 1643</small><small>USD · BY59 BLNB 3013 0000 2966 4100 1840</small></div>
+    </section>
   </footer>;
 }
 
