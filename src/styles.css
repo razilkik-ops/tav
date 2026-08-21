@@ -328,3 +328,40 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--orange);outline-off
 .chat-panel form button:disabled{cursor:not-allowed;opacity:.38}
 @keyframes chat-typing{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-4px);opacity:1}}
 @media(prefers-reduced-motion:reduce){.chat-messages .typing i{animation:none}}
+
+/* On-site support in China and commissioning at the customer's facility. */
+.china-support-section{width:min(1400px,calc(100% - 48px));padding-top:24px;padding-bottom:82px}
+.china-support-section .section-heading{max-width:900px;margin-inline:auto;margin-bottom:38px}
+.china-support-card{position:relative;isolation:isolate;min-height:520px;overflow:hidden;border-radius:30px;background:#07141b;box-shadow:0 24px 58px rgba(0,0,0,.3)}
+.china-support-card:after{content:'';position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(3,9,13,.99) 0%,rgba(3,9,13,.94) 34%,rgba(3,9,13,.76) 52%,rgba(3,9,13,.22) 78%,rgba(3,9,13,.08) 100%);pointer-events:none}
+.china-support-photo{position:absolute;z-index:-2;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.82) saturate(.86)}
+.china-support-copy{position:relative;z-index:1;width:58%;padding:50px 56px 48px}
+.china-support-lead{max-width:650px;margin:0 0 25px;color:#c1c9cd;font-size:18px;line-height:1.55}
+.china-support-points{margin-bottom:30px}
+.china-support-points article{display:grid;grid-template-columns:54px 1fr;gap:17px;padding:20px 0;border-top:1px solid rgba(255,255,255,.15)}
+.china-support-points article:last-child{border-bottom:1px solid rgba(255,255,255,.15)}
+.china-support-points b{padding-top:2px;font-family:'Oswald';font-size:28px;font-weight:500;line-height:1;color:var(--orange)}
+.china-support-points h3{margin:0 0 8px;font-family:'Oswald';font-size:23px;font-weight:500;line-height:1.2;letter-spacing:.02em}
+.china-support-points p{max-width:640px;margin:0;color:#a7b1b6;font-size:14px;line-height:1.55}
+.china-support-copy>.orange-button{min-height:52px;padding-inline:25px}
+@media(max-width:900px){
+  .china-support-section{width:calc(100% - 40px);padding-bottom:68px}
+  .china-support-card{min-height:570px}
+  .china-support-card:after{background:linear-gradient(90deg,rgba(3,9,13,.99) 0%,rgba(3,9,13,.93) 45%,rgba(3,9,13,.54) 76%,rgba(3,9,13,.17) 100%)}
+  .china-support-photo{object-position:58% center}
+  .china-support-copy{width:70%;padding:43px 40px}
+}
+@media(max-width:560px){
+  .china-support-section{width:calc(100% - 28px);padding-top:12px;padding-bottom:58px}
+  .china-support-section .section-heading{margin-bottom:28px}
+  .china-support-card{min-height:0;padding-top:232px;border-radius:var(--radius-lg)}
+  .china-support-card:after{background:linear-gradient(180deg,rgba(3,9,13,.04) 0%,rgba(3,9,13,.22) 145px,#07141b 235px,#07141b 100%)}
+  .china-support-photo{height:245px;object-position:62% center;filter:brightness(.84) saturate(.86)}
+  .china-support-copy{width:100%;padding:25px 20px 24px}
+  .china-support-lead{font-size:16px;line-height:1.5;margin-bottom:18px}
+  .china-support-points article{grid-template-columns:42px 1fr;gap:10px;padding:17px 0}
+  .china-support-points b{font-size:24px}
+  .china-support-points h3{font-size:20px}
+  .china-support-points p{font-size:13px}
+  .china-support-copy>.orange-button{width:100%;padding-inline:16px;font-size:11px}
+}

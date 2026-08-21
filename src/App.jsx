@@ -574,6 +574,31 @@ export function App() {
 
       <GroupSection />
 
+      <section className="section china-support-section" id="china-support">
+        <SectionTitle eyebrow="Дополнительные возможности">ВЫЕЗДЫ В КНР И ТЕХНИЧЕСКОЕ СОПРОВОЖДЕНИЕ</SectionTitle>
+        <div className="china-support-card">
+          <img
+            className="china-support-photo"
+            src={asset('china-technical-support-v1.jpg')}
+            alt="Международная команда проводит инспекцию и пусконаладку промышленного оборудования на заводе в КНР"
+          />
+          <div className="china-support-copy">
+            <p className="china-support-lead">Подключаемся там, где дистанционного контроля недостаточно: на заводе в КНР и на площадке заказчика.</p>
+            <div className="china-support-points">
+              <article>
+                <b>01</b>
+                <div><h3>Оперативный выезд в КНР</h3><p>Организуем инспекцию и проверку оборудования, участие в подписании договора и решение организационных вопросов любой сложности для заказчика.</p></div>
+              </article>
+              <article>
+                <b>02</b>
+                <div><h3>Монтаж и пусконаладка</h3><p>Организуем выезд профильных специалистов из КНР на объект заказчика для монтажа, шеф-монтажа и пусконаладки поставленного оборудования.</p></div>
+              </article>
+            </div>
+            <button className="orange-button" onClick={() => setApplicationService('Выезд в КНР и техническое сопровождение')}>ОБСУДИТЬ СОПРОВОЖДЕНИЕ <ArrowRight /></button>
+          </div>
+        </div>
+      </section>
+
       <section className="section process-section" id="process">
         <SectionTitle eyebrow="От заявки до оборудования на вашем складе">БЕРЁМ НА СЕБЯ ВЕСЬ ПРОЦЕСС</SectionTitle>
         <div className="process-line">{process.map(([label, Icon], index) => <article key={label}><b>{index + 1}</b><Icon /><span>{label}</span></article>)}</div>
