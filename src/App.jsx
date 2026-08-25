@@ -248,9 +248,9 @@ const cases = [
 ];
 
 const groupCompanies = [
-  ['TAV BIO', 'Медицинское направление', 'Поставка оборудования и медизделий из Китая, лицензирование и сопровождение', asset('group-icons/tav-bio-medical-v2.png'), asset('group-scenes/tav-bio-medical-v3.jpg')],
-  ['TAVDORSTROY', 'Дороги и инфраструктура', 'Строительство, материалы и спецтехника', asset('group-icons/tavdorstroy.png'), asset('group-scenes/tavdorstroy-v2.jpg')],
-  ['INKOMSTROYTORG', 'Комплексные поставки', 'Оборудование, комплектующие и материалы', asset('group-icons/inkomstroy.png'), asset('group-scenes/inkomstroy-v2.jpg')],
+  ['TAV BIO', 'ТАВ-Биотехнологии', 'Медицинское направление', 'Поставка оборудования и медизделий из Китая, лицензирование и сопровождение', asset('group-icons/tav-bio-medical-v2.png'), asset('group-scenes/tav-bio-medical-v3.jpg')],
+  ['TAVDORSTROY', 'ТАВДорстрой', 'Дороги и инфраструктура', 'Строительство, материалы и спецтехника', asset('group-icons/tavdorstroy.png'), asset('group-scenes/tavdorstroy-v2.jpg')],
+  ['INKOMSTROYTORG', 'Инкомстройторг', 'Комплексные поставки', 'Оборудование, комплектующие и материалы', asset('group-icons/inkomstroy.png'), asset('group-scenes/inkomstroy-v2.jpg')],
 ];
 
 const groupRequisites = {
@@ -374,13 +374,13 @@ function GroupSection() {
   }, []);
 
   return <section className="section group-section" id="group">
-    <SectionTitle eyebrow="Группа компаний">СТРУКТУРА TAV GROUP</SectionTitle>
+    <SectionTitle eyebrow="Группа компаний">СТРУКТУРА ТАВ-ГРУПП</SectionTitle>
     <div className="group-tree" ref={treeRef}>
-      <article className="group-parent-card" ref={parentRef} tabIndex="0" aria-label="TAV Group. Наведите или нажмите, чтобы посмотреть реквизиты.">
+      <article className="group-parent-card" ref={parentRef} tabIndex="0" aria-label="ТАВ-ГРУПП. Наведите или нажмите, чтобы посмотреть реквизиты.">
         <img className="group-card-photo" src={asset('group-scenes/tav-group-belarus-russia-v1.jpg')} alt="" aria-hidden="true" />
         <div className="group-card-copy">
           <span>ЕДИНАЯ ГРУППА</span>
-          <h2>TAV <b>GROUP</b></h2>
+          <h2>ТАВ-<b>ГРУПП</b></h2>
           <p>Объединяем профильные компании для комплексной реализации проектов.</p>
         </div>
         <GroupRequisites company="TAV GROUP" />
@@ -389,7 +389,7 @@ function GroupSection() {
         {connectorGeometry.targets.map((targetX, index) => <line key={index} x1={connectorGeometry.parentX + (index - 1) * 30} y1="0" x2={targetX} y2="80" />)}
       </svg>
       <div className="group-company-list">
-        {groupCompanies.map(([name, label, description, icon, photo], index) => <article className="group-company-card" key={name} ref={(node) => { companyRefs.current[index] = node; }} tabIndex="0" aria-label={`${name}. Наведите или нажмите, чтобы посмотреть реквизиты.`}>
+        {groupCompanies.map(([key, name, label, description, icon, photo], index) => <article className="group-company-card" key={key} ref={(node) => { companyRefs.current[index] = node; }} tabIndex="0" aria-label={`${name}. Наведите или нажмите, чтобы посмотреть реквизиты.`}>
           <img className="group-card-photo" src={photo} alt="" aria-hidden="true" />
           <b>{String(index + 1).padStart(2, '0')}</b>
           <div className="group-card-copy">
@@ -398,7 +398,7 @@ function GroupSection() {
             <h3>{name}</h3>
             <p>{description}</p>
           </div>
-          <GroupRequisites company={name} />
+          <GroupRequisites company={key} />
         </article>)}
       </div>
     </div>
