@@ -40,6 +40,39 @@ const readAppPath = () => {
   return browserPath.startsWith(`${siteBase}/`) ? browserPath.slice(siteBase.length) : browserPath;
 };
 
+const heroSlides = [
+  {
+    image: asset('hero-industrial-v3.png'),
+    alt: 'Погрузка промышленного насосного модуля в морском терминале',
+    eyebrow: 'TAV IMPORT',
+    title: ['ПРОМЫШЛЕННОЕ', 'ОБОРУДОВАНИЕ ИЗ АЗИИ', 'ПОД КЛЮЧ'],
+    description: 'Находим, проверяем и доставляем оборудование для вашего бизнеса в Беларусь и Россию',
+    action: 'РАССЧИТАТЬ ЗАЯВКУ',
+    service: 'Расчёт заявки',
+    points: [[MapPin, 'РБ + РФ'], [Cube, 'ПОЛНЫЙ ЦИКЛ'], [ShieldCheck, 'КОНТРОЛЬ КАЧЕСТВА']],
+  },
+  {
+    image: asset('hero-inspection-china-v1.png'),
+    alt: 'Инженеры проверяют промышленное оборудование на заводе в КНР',
+    eyebrow: 'КОНТРОЛЬ НА МЕСТЕ',
+    title: ['ИНСПЕКЦИЯ ОБОРУДОВАНИЯ', 'НА ЗАВОДЕ В КНР'],
+    description: 'Проверяем производителя, комплектацию и соответствие техническому заданию до оплаты и отгрузки',
+    action: 'ЗАКАЗАТЬ ИНСПЕКЦИЮ',
+    service: 'Инспекция оборудования в КНР',
+    points: [[Factory, 'ВЫЕЗД НА ЗАВОД'], [ClipboardText, 'ФОТО И ВИДЕООТЧЁТ'], [ShieldCheck, 'ПРОВЕРКА ПО ТЗ']],
+  },
+  {
+    image: asset('hero-logistics-customs-v1.png'),
+    alt: 'Доставка промышленного оборудования по железной дороге из Азии',
+    eyebrow: 'ЛОГИСТИКА ПОД КЛЮЧ',
+    title: ['ДОСТАВКА И ТАМОЖЕННОЕ', 'ОФОРМЛЕНИЕ'],
+    description: 'Строим маршрут, контролируем погрузку и готовим комплект документов до передачи груза заказчику',
+    action: 'РАССЧИТАТЬ ДОСТАВКУ',
+    service: 'Расчёт доставки и таможенного оформления',
+    points: [[MapPin, 'АЗИЯ → РБ И РФ'], [Truck, 'МУЛЬТИМОДАЛЬНАЯ ДОСТАВКА'], [FileText, 'КОМПЛЕКТ ДОКУМЕНТОВ']],
+  },
+];
+
 const CHAT_STORAGE_KEY = 'tav-import-chat-history-v1';
 const CHAT_RETENTION_MS = 24 * 60 * 60 * 1000;
 const CHAT_WELCOME_MESSAGE = { from: 'agent', text: 'Здравствуйте! Помогу подобрать оборудование и рассчитать доставку.' };
@@ -574,6 +607,54 @@ function Footer({ onNavigate }) {
   </footer>;
 }
 
+function HeroSlider({ onApply }) {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const slide = heroSlides[activeSlide];
+
+  useEffect(() => {
+    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timeout = window.setTimeout(() => setActiveSlide(current => (current + 1) % heroSlides.length), 6500);
+    return () => window.clearTimeout(timeout);
+  }, [activeSlide, paused]);
+
+  return <section
+    className="hero hero-slider"
+    id="hero"
+    aria-roledescription="карусель"
+    aria-label="Услуги TAV IMPORT"
+    onMouseEnter={() => setPaused(true)}
+    onMouseLeave={() => setPaused(false)}
+    onFocusCapture={() => setPaused(true)}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+  >
+    <div className="hero-slides" aria-hidden="true">{heroSlides.map((item, index) => <img
+      className={`hero-slide-image ${index === activeSlide ? 'active' : ''}`}
+      key={item.image}
+      src={item.image}
+      alt=""
+    />)}</div>
+    <div className="hero-overlay" />
+    {activeSlide === 0 && <img className="hero-route-map" src={asset('hero-route-map.webp')} alt="" aria-hidden="true" />}
+    <div className="hero-content" key={activeSlide} aria-live="polite">
+      <span>{slide.eyebrow}</span>
+      <h1>{slide.title.map(line => <span key={line}>{line}</span>)}</h1>
+      <p>{slide.description}</p>
+      <div className="hero-actions"><button className="orange-button" onClick={() => onApply(slide.service)}>{slide.action} <ArrowRight /></button></div>
+      <div className="hero-points">{slide.points.map(([Icon, label]) => <span key={label}><Icon /> {label}</span>)}</div>
+    </div>
+    <div className="hero-pagination" role="group" aria-label="Выбор слайда">{heroSlides.map((item, index) => <button
+      className={index === activeSlide ? 'active' : ''}
+      key={item.eyebrow}
+      type="button"
+      aria-label={`Слайд ${index + 1}: ${item.eyebrow}`}
+      aria-current={index === activeSlide ? 'true' : undefined}
+      onClick={() => setActiveSlide(index)}
+    ><b>{String(index + 1).padStart(2, '0')}</b><i /></button>)}</div>
+    <p className="sr-only">{slide.alt}</p>
+  </section>;
+}
+
 export function App() {
   const qaMode = new URLSearchParams(window.location.search).has('qa');
   const [path, setPath] = useState(readAppPath());
@@ -617,18 +698,7 @@ export function App() {
   return <div className={`app-shell ${qaMode ? 'qa-mode' : ''}`}>
     <Header onNavigate={navigate} onApply={setApplicationService} />
     <main>
-      <section className="hero" id="hero">
-        <img src={asset('hero-industrial-v3.png')} alt="Погрузка промышленного насосного модуля в морском терминале" />
-        <div className="hero-overlay" />
-        <img className="hero-route-map" src={asset('hero-route-map.webp')} alt="" aria-hidden="true" />
-        <div className="hero-content">
-          <span>TAV IMPORT</span>
-          <h1>ПРОМЫШЛЕННОЕ<br />ОБОРУДОВАНИЕ ИЗ АЗИИ<br />ПОД КЛЮЧ</h1>
-          <p>Находим, проверяем и доставляем оборудование<br />для вашего бизнеса в Беларусь и Россию</p>
-          <div className="hero-actions"><button className="orange-button" onClick={() => setApplicationService('Расчёт заявки')}>РАССЧИТАТЬ ЗАЯВКУ <ArrowRight /></button></div>
-          <div className="hero-points"><span><MapPin /> РБ + РФ</span><span><Cube /> ПОЛНЫЙ ЦИКЛ</span><span><ShieldCheck /> КОНТРОЛЬ КАЧЕСТВА</span></div>
-        </div>
-      </section>
+      <HeroSlider onApply={setApplicationService} />
 
       <section className="section directions" id="directions">
         <SectionTitle>НАПРАВЛЕНИЯ ПОСТАВОК</SectionTitle>
