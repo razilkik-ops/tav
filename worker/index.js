@@ -1,5 +1,5 @@
 const DEFAULT_DEEPSEEK_ENDPOINT = "https://api.aiai.by/v1/chat/completions";
-const DEFAULT_DEEPSEEK_MODEL = "deepseek-chat";
+const DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-pro";
 const MAX_MESSAGES = 20;
 const MAX_MESSAGE_LENGTH = 4000;
 const MAX_CONVERSATION_LENGTH = 16000;
