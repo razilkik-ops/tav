@@ -377,7 +377,7 @@ function GroupSection() {
     <SectionTitle eyebrow="Группа компаний">СТРУКТУРА TAV GROUP</SectionTitle>
     <div className="group-tree" ref={treeRef}>
       <article className="group-parent-card" ref={parentRef} tabIndex="0" aria-label="TAV Group. Наведите или нажмите, чтобы посмотреть реквизиты.">
-        <img className="group-card-photo" src={asset('group-scenes/tav-group-russian-flag-v4.jpg')} alt="" aria-hidden="true" />
+        <img className="group-card-photo" src={asset('group-scenes/tav-group-belarus-russia-v1.jpg')} alt="" aria-hidden="true" />
         <div className="group-card-copy">
           <span>ЕДИНАЯ ГРУППА</span>
           <h2>TAV <b>GROUP</b></h2>
