@@ -189,13 +189,48 @@ const supplyCardImages = {
 };
 
 const process = [
-  ['Поиск', MagnifyingGlass],
-  ['Образцы', Cube],
-  ['Производство', Factory],
-  ['Инспекция', ClipboardText],
-  ['Доставка', Truck],
-  ['Растаможка', FileText],
-  ['Склад клиента', Warehouse],
+  {
+    label: 'Поиск',
+    title: 'Подбор производителя',
+    Icon: MagnifyingGlass,
+    description: 'По вашему запросу изучаем предложения как минимум 3–4 производителей. Сравниваем их по техническим спецификациям, условиям работы и качеству коммуникации, после чего выбираем наиболее подходящего кандидата.',
+  },
+  {
+    label: 'Образцы',
+    title: 'Проверка образцов',
+    Icon: Cube,
+    description: 'У наиболее подходящих производителей запрашиваем образцы и доставляем их заказчику для испытаний или визуальной проверки. Результат оцениваем до размещения основного заказа.',
+  },
+  {
+    label: 'Производство',
+    title: 'Сопровождение производства',
+    Icon: Factory,
+    description: 'На всём этапе производства поддерживаем постоянную связь с производителем. Оперативно уточняем возникающие вопросы и согласовываем с заказчиком изменения, которые могут повлиять на результат.',
+  },
+  {
+    label: 'Инспекция',
+    title: 'Инспекция в Китае',
+    Icon: ClipboardText,
+    description: 'После завершения производства наш специалист в Китае выезжает на предприятие, проверяет готовый товар и готовит фото- и видеоотчёт. Материалы направляем заказчику на согласование до отгрузки.',
+  },
+  {
+    label: 'Доставка',
+    title: 'Комплектовка и отправка',
+    Icon: Truck,
+    description: 'После согласования комплектуем товар, контролируем упаковку и погрузку в автомобильный, железнодорожный, морской или иной вид транспорта, заранее согласованный с заказчиком.',
+  },
+  {
+    label: 'Растаможка',
+    title: 'Таможенное оформление',
+    Icon: FileText,
+    description: 'Наши таможенные декларанты организуют растаможку товара и оформляют полный комплект сопутствующих документов, необходимый заказчику для получения и дальнейшей эксплуатации груза.',
+  },
+  {
+    label: 'Склад клиента',
+    title: 'Доставка до получателя',
+    Icon: Warehouse,
+    description: 'После выпуска товара доставляем груз на склад заказчика или в другое заранее согласованное место и передаём его получателю.',
+  },
 ];
 
 const advantages = [
@@ -655,6 +690,35 @@ function HeroSlider({ onApply }) {
   </section>;
 }
 
+function ProcessSection() {
+  const [activeStep, setActiveStep] = useState(null);
+  const selected = activeStep === null ? null : process[activeStep];
+
+  return <section className="section process-section" id="process">
+    <SectionTitle eyebrow="От заявки до оборудования на вашем складе">БЕРЁМ НА СЕБЯ ВЕСЬ ПРОЦЕСС</SectionTitle>
+    <div className="process-line">{process.map(({ label, Icon }, index) => <article className={activeStep === index ? 'active' : ''} key={label}>
+      <button
+        className="process-step"
+        type="button"
+        aria-expanded={activeStep === index}
+        aria-controls="process-detail"
+        onMouseEnter={() => setActiveStep(index)}
+        onFocus={() => setActiveStep(index)}
+        onClick={() => setActiveStep(index)}
+      >
+        <b>{index + 1}</b><Icon /><span>{label}</span>
+      </button>
+    </article>)}</div>
+    <div className={`process-detail ${selected ? 'active' : 'is-empty'}`} id="process-detail" aria-live="polite">
+      {selected ? <>
+        <b>{String(activeStep + 1).padStart(2, '0')}</b>
+        <div><span>ЭТАП РАБОТЫ</span><h3>{selected.title}</h3></div>
+        <p>{selected.description}</p>
+      </> : <p className="process-detail-hint">Наведите на этап, чтобы узнать, как мы организуем работу</p>}
+    </div>
+  </section>;
+}
+
 export function App() {
   const qaMode = new URLSearchParams(window.location.search).has('qa');
   const [path, setPath] = useState(readAppPath());
@@ -732,10 +796,7 @@ export function App() {
         </div>
       </section>
 
-      <section className="section process-section" id="process">
-        <SectionTitle eyebrow="От заявки до оборудования на вашем складе">БЕРЁМ НА СЕБЯ ВЕСЬ ПРОЦЕСС</SectionTitle>
-        <div className="process-line">{process.map(([label, Icon], index) => <article key={label}><b>{index + 1}</b><Icon /><span>{label}</span></article>)}</div>
-      </section>
+      <ProcessSection />
 
       <section className="section advantages" id="advantages">
         <div className="advantages-lead"><h2>ПОЧЕМУ TAV IMPORT</h2><p><strong>7</strong><span>ЭТАПОВ<br />ПОД КОНТРОЛЕМ</span></p></div>
