@@ -416,7 +416,7 @@ function DirectionCard({ item, onApply, onNavigate }) {
   </article>;
 }
 
-function ApplicationModal({ service, onClose, onSuccess }) {
+function ApplicationModal({ service, onClose, onSuccess, onPrivacy }) {
   useEffect(() => {
     if (!service) return undefined;
     const previousOverflow = document.body.style.overflow;
@@ -450,7 +450,7 @@ function ApplicationModal({ service, onClose, onSuccess }) {
           <label><span>Номер телефона</span><input name="phone" type="tel" autoComplete="tel" placeholder="+375 (__) ___-__-__" required /></label>
           <label><span>Выбранная услуга</span><input name="service" value={service} readOnly /></label>
         </div>
-        <label className="application-consent"><input type="checkbox" required /><span>Я согласен на обработку персональных данных.</span></label>
+        <label className="application-consent"><input type="checkbox" required /><span>Я согласен на обработку персональных данных в соответствии с <button type="button" onClick={onPrivacy}>политикой конфиденциальности</button>.</span></label>
         <button className="orange-button application-submit" type="submit">ОТПРАВИТЬ ЗАЯВКУ <ArrowRight /></button>
       </form>
     </section>
@@ -630,7 +630,7 @@ function DirectionPage({ item, onNavigate, onApply, onQuestion }) {
 function Footer({ onNavigate }) {
   return <footer className="site-footer">
     <div className="footer-brand"><Logo onHome={() => onNavigate('/')} /><p>Импорт промышленного оборудования,<br />станков, спецтехники и запчастей<br />из Азии в РБ и РФ.</p><small>© TAV IMPORT, 2026</small></div>
-    <div><h4>КОМПАНИЯ</h4><button onClick={() => onNavigate('/', 'group')}>О компании</button><button onClick={() => onNavigate('/', 'group')}>Группа компаний</button><button onClick={() => onNavigate('/', 'contacts')}>Документы</button><button onClick={() => onNavigate('/', 'cases')}>Новости</button></div>
+    <div><h4>КОМПАНИЯ</h4><button onClick={() => onNavigate('/', 'group')}>О компании</button><button onClick={() => onNavigate('/', 'group')}>Группа компаний</button><button onClick={() => onNavigate('/', 'contacts')}>Документы</button><button onClick={() => onNavigate('/', 'cases')}>Новости</button><button onClick={() => onNavigate('/privacy')}>Политика конфиденциальности</button></div>
     <div><h4>УСЛУГИ</h4><button onClick={() => onNavigate('/', 'process')}>Поиск оборудования</button><button onClick={() => onNavigate('/', 'process')}>Инспекция</button><button onClick={() => onNavigate('/', 'process')}>Логистика и доставка</button><button onClick={() => onNavigate('/', 'process')}>Таможенное оформление</button></div>
     <div><h4>НАПРАВЛЕНИЯ</h4>{directions.map(item => <button key={item.id} onClick={() => onNavigate(item.path)}>{item.name}</button>)}</div>
     <div className="messengers"><h4>МЫ В МЕССЕНДЖЕРАХ</h4><div><a href="#telegram" aria-label="Telegram"><PaperPlaneTilt weight="fill" /></a><a href="#whatsapp" aria-label="WhatsApp"><Phone weight="fill" /></a><a href="#viber" aria-label="Viber"><ChatCircleDots weight="fill" /></a></div></div>
@@ -640,6 +640,76 @@ function Footer({ onNavigate }) {
       <div className="footer-bank"><span>Банковские реквизиты</span><b>ОАО «БНБ-Банк» · БИК BLNBBY2X</b><small>BYN · BY07 BLNB 3013 0000 2966 4100 0933</small><small>EUR · BY19 BLNB 3013 0000 2966 4100 1978</small><small>RUB · BY43 BLNB 3013 0000 2966 4100 1643</small><small>USD · BY59 BLNB 3013 0000 2966 4100 1840</small></div>
     </section>
   </footer>;
+}
+
+function PrivacyPolicy() {
+  return <main className="privacy-page">
+    <section className="privacy-hero">
+      <div>
+        <span>ПРАВОВАЯ ИНФОРМАЦИЯ / TAV IMPORT</span>
+        <h1>ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</h1>
+        <p>Порядок обработки и защиты персональных данных посетителей сайта.</p>
+        <small>Редакция от 26 августа 2026 года</small>
+      </div>
+    </section>
+
+    <article className="privacy-content section">
+      <div className="privacy-intro">
+        <strong>ОПЕРАТОР ПЕРСОНАЛЬНЫХ ДАННЫХ</strong>
+        <p>Индивидуальный предприниматель Титовцов Андрей Васильевич, УНП 790925873, 213051, Могилевская обл., г. Белыничи, ул. Парковая, д. 8 (далее — Оператор).</p>
+      </div>
+
+      <section>
+        <span>01</span>
+        <div><h2>ОБЩИЕ ПОЛОЖЕНИЯ</h2><p>Настоящая Политика определяет порядок обработки персональных данных при использовании сайта TAV IMPORT и подготовлена с учётом Закона Республики Беларусь от 7 мая 2021 г. № 99-З «О защите персональных данных». Политика распространяется на сведения, которые посетитель сообщает через форму заявки, ИИ-чат или при прямом обращении к Оператору.</p></div>
+      </section>
+
+      <section>
+        <span>02</span>
+        <div><h2>КАКИЕ ДАННЫЕ МЫ ОБРАБАТЫВАЕМ</h2><ul>
+          <li>имя, фамилия, номер телефона и выбранная услуга — при отправке заявки;</li>
+          <li>сообщения в ИИ-чате и добровольно указанные в них сведения: компания, контакты, описание оборудования или товара, технические требования, количество, место доставки, желаемые сроки и ориентировочный бюджет;</li>
+          <li>технические сведения, необходимые для работы и защиты сайта: IP-адрес, тип браузера и устройства, дата и время обращения, адрес запрошенной страницы, технические журналы сервера;</li>
+          <li>история ИИ-чата, сохраняемая в локальном хранилище браузера пользователя в течение 24 часов после последнего сообщения.</li>
+        </ul></div>
+      </section>
+
+      <section>
+        <span>03</span>
+        <div><h2>ЦЕЛИ И ПРАВОВЫЕ ОСНОВАНИЯ</h2><p>Данные используются для ответа на обращение, уточнения задачи, подготовки коммерческого предложения, связи с потенциальным заказчиком, передачи обращения ответственному менеджеру, обеспечения работы и безопасности сайта, а также исполнения обязанностей, установленных законодательством. Обработка выполняется на основании согласия посетителя, действий до заключения договора по его инициативе, исполнения договора либо требований законодательства — в зависимости от ситуации.</p></div>
+      </section>
+
+      <section>
+        <span>04</span>
+        <div><h2>ИИ-ЧАТ И ПЕРЕДАЧА ДАННЫХ</h2><p>Для подготовки ответа сообщения из чата передаются через защищённый серверный интерфейс поставщику ИИ-сервиса. Не сообщайте в чате пароли, банковские реквизиты, специальные персональные данные и иную информацию, которая не нужна для консультации. Ответ ИИ носит информационный характер; окончательные технические, ценовые и договорные условия подтверждает менеджер.</p><p>Оператор может привлекать поставщиков хостинга, связи, ИИ-сервиса и CRM как уполномоченных лиц в объёме, необходимом для работы сайта и обработки обращения. Если инфраструктура такого поставщика находится за пределами Республики Беларусь, возможна трансграничная передача данных с соблюдением применимых требований законодательства.</p></div>
+      </section>
+
+      <section>
+        <span>05</span>
+        <div><h2>СРОКИ ХРАНЕНИЯ</h2><p>Данные обрабатываются не дольше, чем это необходимо для указанных целей, либо в течение срока, установленного законодательством или договором. При отзыве согласия данные удаляются или обезличиваются, если у Оператора отсутствует другое законное основание для продолжения обработки. История чата на устройстве посетителя автоматически удаляется через 24 часа после последнего сообщения; её также можно удалить раньше, очистив данные сайта в браузере.</p></div>
+      </section>
+
+      <section>
+        <span>06</span>
+        <div><h2>ЗАЩИТА ДАННЫХ</h2><p>Оператор применяет необходимые правовые, организационные и технические меры для защиты данных от неправомерного доступа, изменения, раскрытия, блокирования или уничтожения. Доступ предоставляется только тем лицам и поставщикам, которым он нужен для выполнения соответствующей задачи.</p></div>
+      </section>
+
+      <section>
+        <span>07</span>
+        <div><h2>ВАШИ ПРАВА</h2><p>Вы вправе получать информацию об обработке своих данных, требовать их изменения, прекращения обработки или удаления, отозвать согласие без объяснения причин, а также обжаловать действия Оператора в Национальный центр защиты персональных данных Республики Беларусь или суд. Отзыв согласия не влияет на законность обработки, выполненной до его получения.</p></div>
+      </section>
+
+      <section>
+        <span>08</span>
+        <div><h2>КАК СВЯЗАТЬСЯ С ОПЕРАТОРОМ</h2><p>Обращение по вопросам персональных данных можно направить в письменной форме по адресу: 213051, Могилевская обл., г. Белыничи, ул. Парковая, д. 8. Телефон/факс: <a href="tel:+375222746081">8 0222 746081</a>. В обращении укажите имя, суть требования и сведения, позволяющие подтвердить, что данные относятся к вам.</p></div>
+      </section>
+
+      <section>
+        <span>09</span>
+        <div><h2>ИЗМЕНЕНИЯ ПОЛИТИКИ</h2><p>Оператор вправе обновлять Политику при изменении работы сайта или требований законодательства. Актуальная редакция всегда размещается на этой странице и действует с указанной в ней даты.</p></div>
+      </section>
+    </article>
+  </main>;
 }
 
 function HeroSlider({ onApply }) {
@@ -727,12 +797,13 @@ export function App() {
   const [activeCase, setActiveCase] = useState(0);
   const [notice, setNotice] = useState('');
   const activeDirection = directions.find(item => item.path === path);
+  const isPrivacyPage = path === '/privacy';
   useEffect(() => {
     const syncPath = () => setPath(readAppPath());
     window.addEventListener('popstate', syncPath);
     return () => window.removeEventListener('popstate', syncPath);
   }, []);
-  useEffect(() => { document.title = activeDirection ? `${activeDirection.name} из Азии — TAV IMPORT` : 'TAV IMPORT — промышленное оборудование из Азии'; }, [activeDirection]);
+  useEffect(() => { document.title = isPrivacyPage ? 'Политика конфиденциальности — TAV IMPORT' : activeDirection ? `${activeDirection.name} из Азии — TAV IMPORT` : 'TAV IMPORT — промышленное оборудование из Азии'; }, [activeDirection, isPrivacyPage]);
   useEffect(() => { if (!notice) return; const id = setTimeout(() => setNotice(''), 4200); return () => clearTimeout(id); }, [notice]);
   const navigate = (nextPath = '/', anchor = '') => {
     const normalizedPath = nextPath.replace(/\/$/, '') || '/';
@@ -749,12 +820,25 @@ export function App() {
     ? `Здравствуйте, у меня есть вопрос по поставке ${subject}.`
     : `Здравствуйте, у меня есть вопрос по поставке «${subject}».`
   });
+  const openPrivacy = () => {
+    setApplicationService('');
+    navigate('/privacy');
+  };
+
+  if (isPrivacyPage) return <div className={`app-shell ${qaMode ? 'qa-mode' : ''}`}>
+    <Header onNavigate={navigate} onApply={setApplicationService} />
+    <PrivacyPolicy />
+    <Footer onNavigate={navigate} />
+    <ApplicationModal service={applicationService} onClose={() => setApplicationService('')} onSuccess={leadSuccess} onPrivacy={openPrivacy} />
+    <ChatWidget request={chatRequest} />
+    {notice && <div className="toast"><CheckCircle weight="fill" /><span>{notice}</span><button onClick={() => setNotice('')}><X /></button></div>}
+  </div>;
 
   if (activeDirection) return <div className={`app-shell ${qaMode ? 'qa-mode' : ''}`}>
     <Header onNavigate={navigate} onApply={setApplicationService} />
     <DirectionPage item={activeDirection} onNavigate={navigate} onApply={setApplicationService} onQuestion={askQuestion} />
     <Footer onNavigate={navigate} />
-    <ApplicationModal service={applicationService} onClose={() => setApplicationService('')} onSuccess={leadSuccess} />
+    <ApplicationModal service={applicationService} onClose={() => setApplicationService('')} onSuccess={leadSuccess} onPrivacy={openPrivacy} />
     <ChatWidget request={chatRequest} />
     {notice && <div className="toast"><CheckCircle weight="fill" /><span>{notice}</span><button onClick={() => setNotice('')}><X /></button></div>}
   </div>;
@@ -812,7 +896,7 @@ export function App() {
       <ContactStrip />
     </main>
     <Footer onNavigate={navigate} />
-    <ApplicationModal service={applicationService} onClose={() => setApplicationService('')} onSuccess={leadSuccess} />
+    <ApplicationModal service={applicationService} onClose={() => setApplicationService('')} onSuccess={leadSuccess} onPrivacy={openPrivacy} />
     <ChatWidget request={chatRequest} />
     {notice && <div className="toast"><CheckCircle weight="fill" /><span>{notice}</span><button onClick={() => setNotice('')}><X /></button></div>}
   </div>;
